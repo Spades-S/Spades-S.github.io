@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+<!-- Head tag -->
+<head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    
+    <title>
+    
+        在网页中确定鼠标、元素的位置 - 
+    
+    Spades
+    </title>
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="Warning: inexperienced programmer inside!">
+    <meta name="author" content="Dr. A. Clef">
+    
+    <link rel="alternate" type="application/atom+xml" hrel="/atom.xml">
+    
+    <link rel="Shortcut Icon" href="/favicon.ico" type="image/x-icon">
+    
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/responsive.css" rel="stylesheet" type="text/css" media="screen and (max-width: 768px)">
+    <link href="https://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.bootcss.com/cc-icons/1.2.1/css/cc-icons.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+    <script src="/js/dropdown.js" type="text/javascript" async></script>
+    <script src="/js/sidebar.js" type="text/javascript" async></script>
+    
+</head>
+
+
+<body class="single">
+    <div id="header">
+    <div class="container clearfix">
+        <div class="logo" style="width: auto;">
+            <a href="/" title="Spades" rel="home" style="text-decoration: none;">
+                
+                <span class="brand-logo">
+                    
+                    Spades
+                    
+                
+                </span>
+            </a>
+        </div>
+        
+<form method="get" class="search-form" action="/search.html">
+    <input type="text" name="s" class="search-input" placeholder="输入关键词" />
+    <button type="submit" class="search-submit">
+        <span class="fa fa-search"></span>
+    </button>
+</form>
+
+
+        <div class="global-nav">
+            <ul class="gnul">
+                <li class="gnli ">
+                    <a class="gna" href="/" title="Spades">
+                        <span class="fa fa-home"></span><span>主页</span>
+                    </a>
+                </li>
+                
+                <li class="gnli dropdown current">
+                    <a class="gna dropdown-link fa fa-bars" href="javascript:;">
+                        <span>导航</span>
+                    </a>
+                    <div class="dropdown-arrow1"></div>
+                    <div class="dropdown-arrow2"></div>
+                    <div class="submenu">
+                        <div class="tab-content">
+                            <table>
+                                <tbody>
+                                    
+                                    <tr class="trline">
+                                        <td class="tdleft">分类</td>
+                                        <td class="tdright">
+                                            <div class="tab-categories">
+                                                <ul>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/CSS/">CSS</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/JavaScript/">JavaScript</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/readlist/">readlist</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/工程/">工程</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/运维/">运维</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/随笔/">随笔</a>
+                                                    </li>
+                                                
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- <tr>
+                                        <td class="tdleft">标签</td>
+                                        <td class="tdright">
+                                            <div class="tab-tags">
+                                                <a href="/tags/个人总结/" style="font-size: 12px;">个人总结</a> <a href="/tags/阅读整理/" style="font-size: 12px;">阅读整理</a> <a href="/tags/杂感/" style="font-size: 12px;">杂感</a>
+                                            </div>
+                                        </td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+                
+                
+                <li class="gnli">
+                    <a class="gna" href="/archives/" title="">
+                        <span class="fa fa-archive"></span>归档
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/about/" title="">
+                        <span class="fa fa-user"></span>关于
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/2017-08-29-readlist" title="">
+                        <span class="fa fa-book"></span>阅读列表
+                    </a>
+                </li>
+                
+                
+                
+            </ul>
+        </div>
+    </div>
+        <div id="motto">
+            
+        </div>
+</div>
+
+    <div id="content">
+    <div class="container clearfix">
+        <div id="primary" class="no-toc">
+            
+            <div class="breadcrumb-navigation">
+                <a rel="bookmark" href="/">
+                    主页
+                </a>
+                <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                 
+<a href="/categories/JavaScript/" title="JavaScript" rel="category tag">JavaScript</a>
+
+                    <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                    在网页中确定鼠标、元素的位置
+            </div>
+            
+            <div class="single-post">
+              
+                <div class="post-header">
+                    <h2 class="post-title">
+                        <a href="/2017-04-26-在网页中确定鼠标、元素的位置/" title="在网页中确定鼠标、元素的位置">
+                            在网页中确定鼠标、元素的位置
+                        </a>
+                    </h2>
+                </div>
+              
+                 <div class="post-meta">
+                    <ul class="inline-ul">
+                        <li class="inline-li">
+                            2017-04-26
+                        </li>
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                             
+<a href="/categories/JavaScript/" title="JavaScript" rel="category tag">JavaScript</a>
+
+                        </li>
+                        
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                            <span id="busuanzi_value_page_pv"></span> Views
+                        </li>
+                        
+                    </ul>
+                </div>
+                <div class="post-body clearfix">
+                    <div class="post-content">
+                        
+                                <p>在需要获取鼠标相对于元素的位置的时候，首先必须确定鼠标位置、元素位置，如此才能进行计算。鼠标位置、元素位置有多种获取方式，获取的值也各不相同，有的是相对于视口的，有的是相对于文档的….在没有滚动条的时候计算会很简单，相对于文档和相对于视口取得的值相同，一旦有了滚动条就会变得麻烦起来。</p>
+<h3 id="获取鼠标位置"><a href="#获取鼠标位置" class="headerlink" title="获取鼠标位置"></a>获取鼠标位置</h3><ul>
+<li><p>pageX、pageY</p>
+<p>鼠标事件的只读属性(MouseEvent.pageX ，MouseEvent.pageY)pageX和pageY返回的是相对于整个文档的坐标，以像素为单位。</p>
+<p>This property takes into account any vertical(pageX) , horizontal(pageY)scrolling of the page. ——from  MDN </p>
+<p>这两个属性会把滚动也计算进去。但是这两个属性只会把body的滚动计算进去，如果是body内部元素的滚动需要在pageX、pageY上叠加上滚动的值。</p>
+<p>其实这是一个有意思的事情。</p>
+</li>
+<li><p>clientX、clientY</p>
+<p>鼠标事件的只读属性clientX和clientY返回的是相对于浏览器内容区域的X、Y坐标，不包含滚动的值</p>
+<p> clicking in the top-left corner of the client area will always result in a mouse event with a <code>clientX</code> value of 0, regardless of whether the page is scrolled . ——from MDN </p>
+</li>
+<li><p>screenX、screenY</p>
+<p>鼠标事件的只读属性screenX和screenY返回的是鼠标相对于屏幕的距离。</p>
+</li>
+<li><p>offsetX、offsetY</p>
+<p>和pageX、pageY类似，只有IE支持</p>
+<p>​</p>
+</li>
+</ul>
+<h3 id="获取DOM元素位置和尺寸大小"><a href="#获取DOM元素位置和尺寸大小" class="headerlink" title="获取DOM元素位置和尺寸大小"></a>获取DOM元素位置和尺寸大小</h3><p>以下内容都是DOM元素的属性</p>
+<ul>
+<li><p>offsetWidth 和 offsetHeight：元素宽度，包括border和padding</p>
+</li>
+<li><p>clientWidth 和 clientHeight：元素宽度，包括padding，不包含滚动条，margin，border。如果没有CSS属性或者是inline layout box其值将会是0</p>
+</li>
+<li><p>scrollWidth和scrollHeight：元素的内容区域加上内边距加上溢出尺寸，当内容正好和内容区域匹配没有溢出时，这些属性与clientWidth和clientHeight相等</p>
+</li>
+<li><p>offsetLeft 和 offsetTop：和已定位父容器左上角的距离。</p>
+<p>注意：对于块级元素来讲，offsetWidth、offsetHeight、offsetLeft、offsetTop描述的是一个元素border的宽度高度以及相对于offsetParent的距离</p>
+<p>However, for inline-level elements (such as <strong>span</strong>) that can wrap from one line to the next, <code>offsetTop</code>and <code>offsetLeft</code> describe the positions of the <em>first</em> border box (use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getClientRects" target="_blank" rel="noopener"><code>Element.getClientRects()</code></a> to get its width and height), while <code>offsetWidth</code> and <code>offsetHeight</code> describe the dimensions of the <em>bounding</em>border box (use <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect" target="_blank" rel="noopener"><code>Element.getBoundingClientRect()</code></a> to get its position). Therefore, a box with the left, top, width and height of <code>offsetLeft, offsetTop, offsetWidth</code> and <code>offsetHeight</code> will not be a bounding box for a span with wrapped text.</p>
+<p>因为不知道怎么翻译，就把这段话粘贴过来了</p>
+</li>
+<li><p>clientTop和clientLeft返回内边距的边缘和边框的外边缘之间的水平和垂直距离，也就是左，上边框宽度</p>
+</li>
+<li><p>scrollLeft和scrollTop是指元素滚动条位置</p>
+</li>
+</ul>
+
+                    </div>
+                </div>
+                  
+                <div class="post-tags">
+                    
+                        
+                            <a href="/tags/个人总结/" title="个人总结" rel="tag" class="fa fa-tag">
+                                个人总结
+                            </a>
+                            
+                                
+                </div>
+                <ul class="pager">
+
+    <li class="previous">
+        <a href="/2017-06-06-mysql修改root密码/" title="mysql修改root密码" class="tooltipped tooltipped-n" aria-label="mysql修改root密码"><i class="fa fa-chevron-left"></i> 上一篇文章</a>
+    </li>
+    
+    
+    <li class="next">
+        <a href="/2017-04-20-三栏式布局/" title="三栏式布局" class="tooltipped tooltipped-n" aria-label="三栏式布局">下一篇文章 <i class="fa fa-chevron-right"></i></a>
+    </li>
+    
+</ul>
+
+                  
+            </div>
+              
+            
+<div id="container"  style="margin-top: 70px"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+    owner: 'Spades-S',
+    repo: 'SpadesComments',
+    oauth: {
+        client_id: '97c0bf26004470371f4e',
+        client_secret: '2cc70304d7b9e02d6dd486319038673daebab9d9',
+    },
+    })
+gitment.render('container')
+</script>
+
+
+              
+        </div>
+        <!-- #primary -->
+        
+    </div>
+     
+
+</div>
+    <!-- Footer -->
+    
+<!-- #content -->
+<div id="footer">
+    <div class="container">
+        <p>
+            <span class="cc-license">
+                <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" title="Creative Commons license by-sa">
+                <i class="cc cc-cc"></i>
+                
+                    <i class="cc cc-by"></i>
+                
+                    <i class="cc cc-sa"></i>
+                
+                </a>
+            </span>
+            2017.2-2018 Spades.
+        </p>
+        <p>Themed by <a href="https://github.com/unnamed42/hexo-theme-kunkka">Kunkka</a> | Powered by <a href="https://hexo.io/">Hexo</a>.</p>
+        
+
+
+<div class="sns-icons">
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+</div>
+
+
+    </div>
+</div>
+<!-- #footer -->
+
+    <!-- Totop -->
+<div id="backtoTop" data-action="gototop" title="送你上天">
+    <canvas id="backtoTopCanvas" width="48" height="48"></canvas>
+    <div class="percentage"></div>
+</div>
+
+<script src="/js/totop.js" type="text/javascript" async></script>
+
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</body>
+
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+<!-- Head tag -->
+<head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    
+    <title>
+    
+        Nginx+thinkphp MAC Os - 
+    
+    Spades
+    </title>
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="Warning: inexperienced programmer inside!">
+    <meta name="author" content="Dr. A. Clef">
+    
+    <link rel="alternate" type="application/atom+xml" hrel="/atom.xml">
+    
+    <link rel="Shortcut Icon" href="/favicon.ico" type="image/x-icon">
+    
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/responsive.css" rel="stylesheet" type="text/css" media="screen and (max-width: 768px)">
+    <link href="https://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.bootcss.com/cc-icons/1.2.1/css/cc-icons.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+    <script src="/js/dropdown.js" type="text/javascript" async></script>
+    <script src="/js/sidebar.js" type="text/javascript" async></script>
+    
+</head>
+
+
+<body class="single">
+    <div id="header">
+    <div class="container clearfix">
+        <div class="logo" style="width: auto;">
+            <a href="/" title="Spades" rel="home" style="text-decoration: none;">
+                
+                <span class="brand-logo">
+                    
+                    Spades
+                    
+                
+                </span>
+            </a>
+        </div>
+        
+<form method="get" class="search-form" action="/search.html">
+    <input type="text" name="s" class="search-input" placeholder="输入关键词" />
+    <button type="submit" class="search-submit">
+        <span class="fa fa-search"></span>
+    </button>
+</form>
+
+
+        <div class="global-nav">
+            <ul class="gnul">
+                <li class="gnli ">
+                    <a class="gna" href="/" title="Spades">
+                        <span class="fa fa-home"></span><span>主页</span>
+                    </a>
+                </li>
+                
+                <li class="gnli dropdown current">
+                    <a class="gna dropdown-link fa fa-bars" href="javascript:;">
+                        <span>导航</span>
+                    </a>
+                    <div class="dropdown-arrow1"></div>
+                    <div class="dropdown-arrow2"></div>
+                    <div class="submenu">
+                        <div class="tab-content">
+                            <table>
+                                <tbody>
+                                    
+                                    <tr class="trline">
+                                        <td class="tdleft">分类</td>
+                                        <td class="tdright">
+                                            <div class="tab-categories">
+                                                <ul>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/CSS/">CSS</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/JavaScript/">JavaScript</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/readlist/">readlist</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/工程/">工程</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/运维/">运维</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/随笔/">随笔</a>
+                                                    </li>
+                                                
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- <tr>
+                                        <td class="tdleft">标签</td>
+                                        <td class="tdright">
+                                            <div class="tab-tags">
+                                                <a href="/tags/个人总结/" style="font-size: 12px;">个人总结</a> <a href="/tags/阅读整理/" style="font-size: 12px;">阅读整理</a> <a href="/tags/杂感/" style="font-size: 12px;">杂感</a>
+                                            </div>
+                                        </td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+                
+                
+                <li class="gnli">
+                    <a class="gna" href="/archives/" title="">
+                        <span class="fa fa-archive"></span>归档
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/about/" title="">
+                        <span class="fa fa-user"></span>关于
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/2017-08-29-readlist" title="">
+                        <span class="fa fa-book"></span>阅读列表
+                    </a>
+                </li>
+                
+                
+                
+            </ul>
+        </div>
+    </div>
+        <div id="motto">
+            
+        </div>
+</div>
+
+    <div id="content">
+    <div class="container clearfix">
+        <div id="primary" class="no-toc">
+            
+            <div class="breadcrumb-navigation">
+                <a rel="bookmark" href="/">
+                    主页
+                </a>
+                <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                 
+<a href="/categories/运维/" title="运维" rel="category tag">运维</a>
+
+                    <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                    Nginx+thinkphp MAC Os
+            </div>
+            
+            <div class="single-post">
+              
+                <div class="post-header">
+                    <h2 class="post-title">
+                        <a href="/2017-02-20-Nginx-thinkphp-MAC-Os/" title="Nginx+thinkphp MAC Os">
+                            Nginx+thinkphp MAC Os
+                        </a>
+                    </h2>
+                </div>
+              
+                 <div class="post-meta">
+                    <ul class="inline-ul">
+                        <li class="inline-li">
+                            2017-02-20
+                        </li>
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                             
+<a href="/categories/运维/" title="运维" rel="category tag">运维</a>
+
+                        </li>
+                        
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                            <span id="busuanzi_value_page_pv"></span> Views
+                        </li>
+                        
+                    </ul>
+                </div>
+                <div class="post-body clearfix">
+                    <div class="post-content">
+                        
+                                <p>Nginx+PHP(FastCGI)的安装和配置</p>
+<p>Thanks to <a href="http://ixdba.blog.51cto.com/2895551/806622" target="_blank" rel="noopener">实战Nginx与PHP（FastCGI）的安装、配置与优化</a>、<a href="http://arccode.net/2015/02/27/Nginx%E9%85%8D%E7%BD%AE%E5%B0%8F%E8%AE%B0/" target="_blank" rel="noopener">Nginx配置小记</a></p>
+<h3 id="FastCGI"><a href="#FastCGI" class="headerlink" title="FastCGI"></a>FastCGI</h3><p>FastCGI是一个可伸缩地、高速地在HTTP server和动态脚本语言间通信的接口。多数流行的HTTP server都支持FastCGI，包括Apache、Nginx和lighttpd等，同时，FastCGI也被许多脚本语言所支持，其中就有PHP。<br>FastCGI是从CGI发展改进而来的。传统CGI接口方式的主要缺点是性能很差，因为每次HTTP服务器遇到动态程序时都需要重新启动脚本解析器来执行解析，然后结果被返回给HTTP服务器。这在处理高并发访问时，几乎是不可用的。另外传统的CGI接口方式安全性也很差，现在已经很少被使用了。<br>FastCGI接口方式采用C/S结构，可以将HTTP服务器和脚本解析服务器分开，同时在脚本解析服务器上启动一个或者多个脚本解析守护进程。当HTTP服务器每次遇到动态程序时，可以将其直接交付给FastCGI进程来执行，然后将得到的结果返回给浏览器。这种方式可以让HTTP服务器专一地处理静态请求或者将动态脚本服务器的结果返回给客户端，这在很大程度上提高了整个应用系统的性能</p>
+<h3 id="Nginx-FastCGI运行原理"><a href="#Nginx-FastCGI运行原理" class="headerlink" title="Nginx+FastCGI运行原理"></a>Nginx+FastCGI运行原理</h3><p>Nginx不支持对外部程序的直接调用或者解析，所有的外部程序（包括PHP）必须通过FastCGI接口来调用。FastCGI接口在Linux下是socket，（这个socket可以是文件socket，也可以是ip socket）。为了调用CGI程序，还需要一个FastCGI的wrapper（wrapper可以理解为用于启动另一个程序的程序），这个wrapper绑定在某个固定socket上，如端口或者文件socket。当Nginx将CGI请求发送给这个socket的时候，通过FastCGI接口，wrapper接纳到请求，然后派生出一个新的线程，这个线程调用解释器或者外部程序处理脚本并读取返回数据；接着，wrapper再将返回的数据通过FastCGI接口，沿着固定的socket传递给Nginx；最后，Nginx将返回的数据发送给客户端，这就是Nginx+FastCGI的整个运作过程</p>
+<p><img src="/2017-02-20-Nginx-thinkphp-MAC-Os/Users/spades/Downloads/140224291.png" alt="140224291"></p>
+<h3 id="spawn-fcgi与PHP-FPM"><a href="#spawn-fcgi与PHP-FPM" class="headerlink" title="spawn-fcgi与PHP-FPM"></a><strong>spawn-fcgi与PHP-FPM</strong></h3><p>前面介绍过，FastCGI接口方式在脚本解析服务器上启动一个或者多个守护进程对动态脚本进行解析，这些进程就是FastCGI进程管理器，或者称之为FastCGI引擎， spawn-fcgi与PHP-FPM就是支持PHP的两个FastCGI进程管理器。<br>下面简单介绍spawn-fcgi与PHP-FPM的异同。</p>
+<p>spawn-fcgi是HTTP服务器lighttpd的一部分，目前已经独立成为一个项目，一般与lighttpd配合使用来支持PHP，但是ligttpd的spwan-fcgi在高并发访问的时候，会出现内存泄漏甚至自动重启FastCGI的问题。</p>
+<p>Nginx是个轻量级的HTTP server，必须借助第三方的FastCGI处理器才可以对PHP进行解析，因此Nginx+spawn-fcgi的组合也可以实现对PHP的解析，这里不过多讲述。</p>
+<p>PHP-FPM也是一个第三方的FastCGI进程管理器，它是作为PHP的一个补丁来开发的，在安装的时候也需要和PHP源码一起编译，也就是说PHP-FPM被编译到PHP内核中，因此在处理性能方面更加优秀；同时它在处理高并发方面也比spawn-fcgi引擎好很多，因此，推荐Nginx+PHP/PHP-FPM这个组合对PHP进行解析。</p>
+<p>FastCGI 的主要优点是把动态语言和HTTP Server分离开来，所以Nginx与PHP/PHP-FPM经常被部署在不同的服务器上，以分担前端Nginx服务器的压力，使Nginx专一处理静态请求和转发动态请求，而PHP/PHP-FPM服务器专一解析PHP动态请求</p>
+<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><p>由于Nginx本身不会对PHP进行解析，因此要实现Nginx对PHP的支持，其实是将对PHP页面的请求交给fastCGI进程监听的IP地址及端口。如果把php-fpm当做动态应用服务器，那么Nginx其实就是一个反向代理服务器。Nginx通过反向代理功能实现对PHP的解析，这就是Nginx实现PHP动态解析的原理</p>
+<ul>
+<li><p>配置PHP</p>
+<ul>
+<li><p>Mac系统自带了PHP和php-fpm，不用安装</p>
+</li>
+<li><p>修改php-fpm的配置文件</p>
+<p>找到php-fpm.conf文件(笔者环境下，文件所在位置是/private/etc/)，修改其中的error_log项，否则运行时会报错，log无法输出，需要为error_log添加打印路径</p>
+</li>
+</ul>
+</li>
+<li><p>启动php-fpm ：sudo php-fpm</p>
+</li>
+<li><p>配置Nginx</p>
+<ul>
+<li>把nginx.conf文件中将PHP传递给FastCGI部分的代码取消注释</li>
+<li>修改fastcgi_param，fastcgi_param指令指定放置PHP动态程序的主目录</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">#具体配置代码</span><br><span class="line">location ~ \.php$ &#123;</span><br><span class="line">            root           /Users/spades/www;</span><br><span class="line">            fastcgi_pass   127.0.0.1:9000;</span><br><span class="line">            fastcgi_index  index.php;</span><br><span class="line">            fastcgi_param  SCRIPT_FILENAME  /Users/spades/www$fastcgi_script_name;</span><br><span class="line">            include        fastcgi_params;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>​    /Users/spades/www是笔者放置动态文件的目录</p>
+<ul>
+<li>修改user，确保具有读取php文件的权限</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#user 用户 用户组</span><br><span class="line">user spades staff;</span><br></pre></td></tr></table></figure>
+<p>​</p>
+</li>
+</ul>
+
+                    </div>
+                </div>
+                  
+                <div class="post-tags">
+                    
+                        
+                            <a href="/tags/阅读整理/" title="阅读整理" rel="tag" class="fa fa-tag">
+                                阅读整理
+                            </a>
+                            
+                                
+                </div>
+                <ul class="pager">
+
+    <li class="previous">
+        <a href="/2017-04-20-三栏式布局/" title="三栏式布局" class="tooltipped tooltipped-n" aria-label="三栏式布局"><i class="fa fa-chevron-left"></i> 上一篇文章</a>
+    </li>
+    
+    
+    <li class="next">
+        <a href="/2017-02-11-Chrome-Ajax-http方式无法读取本地文件mac下解决方法/" title="Chrome+Ajax:$http方式无法读取本地文件mac下解决方法" class="tooltipped tooltipped-n" aria-label="Chrome+Ajax:$http方式无法读取本地文件mac下解决方法">下一篇文章 <i class="fa fa-chevron-right"></i></a>
+    </li>
+    
+</ul>
+
+                  
+            </div>
+              
+            
+<div id="container"  style="margin-top: 70px"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+    owner: 'Spades-S',
+    repo: 'SpadesComments',
+    oauth: {
+        client_id: '97c0bf26004470371f4e',
+        client_secret: '2cc70304d7b9e02d6dd486319038673daebab9d9',
+    },
+    })
+gitment.render('container')
+</script>
+
+
+              
+        </div>
+        <!-- #primary -->
+        
+    </div>
+     
+
+</div>
+    <!-- Footer -->
+    
+<!-- #content -->
+<div id="footer">
+    <div class="container">
+        <p>
+            <span class="cc-license">
+                <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" title="Creative Commons license by-sa">
+                <i class="cc cc-cc"></i>
+                
+                    <i class="cc cc-by"></i>
+                
+                    <i class="cc cc-sa"></i>
+                
+                </a>
+            </span>
+            2017.2-2018 Spades.
+        </p>
+        <p>Themed by <a href="https://github.com/unnamed42/hexo-theme-kunkka">Kunkka</a> | Powered by <a href="https://hexo.io/">Hexo</a>.</p>
+        
+
+
+<div class="sns-icons">
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+</div>
+
+
+    </div>
+</div>
+<!-- #footer -->
+
+    <!-- Totop -->
+<div id="backtoTop" data-action="gototop" title="送你上天">
+    <canvas id="backtoTopCanvas" width="48" height="48"></canvas>
+    <div class="percentage"></div>
+</div>
+
+<script src="/js/totop.js" type="text/javascript" async></script>
+
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</body>
+
+</html>

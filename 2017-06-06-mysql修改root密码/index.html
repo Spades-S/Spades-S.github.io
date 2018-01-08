@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+<!-- Head tag -->
+<head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    
+    <title>
+    
+        mysql修改root密码 - 
+    
+    Spades
+    </title>
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="Warning: inexperienced programmer inside!">
+    <meta name="author" content="Dr. A. Clef">
+    
+    <link rel="alternate" type="application/atom+xml" hrel="/atom.xml">
+    
+    <link rel="Shortcut Icon" href="/favicon.ico" type="image/x-icon">
+    
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/responsive.css" rel="stylesheet" type="text/css" media="screen and (max-width: 768px)">
+    <link href="https://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.bootcss.com/cc-icons/1.2.1/css/cc-icons.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+    <script src="/js/dropdown.js" type="text/javascript" async></script>
+    <script src="/js/sidebar.js" type="text/javascript" async></script>
+    
+</head>
+
+
+<body class="single">
+    <div id="header">
+    <div class="container clearfix">
+        <div class="logo" style="width: auto;">
+            <a href="/" title="Spades" rel="home" style="text-decoration: none;">
+                
+                <span class="brand-logo">
+                    
+                    Spades
+                    
+                
+                </span>
+            </a>
+        </div>
+        
+<form method="get" class="search-form" action="/search.html">
+    <input type="text" name="s" class="search-input" placeholder="输入关键词" />
+    <button type="submit" class="search-submit">
+        <span class="fa fa-search"></span>
+    </button>
+</form>
+
+
+        <div class="global-nav">
+            <ul class="gnul">
+                <li class="gnli ">
+                    <a class="gna" href="/" title="Spades">
+                        <span class="fa fa-home"></span><span>主页</span>
+                    </a>
+                </li>
+                
+                <li class="gnli dropdown current">
+                    <a class="gna dropdown-link fa fa-bars" href="javascript:;">
+                        <span>导航</span>
+                    </a>
+                    <div class="dropdown-arrow1"></div>
+                    <div class="dropdown-arrow2"></div>
+                    <div class="submenu">
+                        <div class="tab-content">
+                            <table>
+                                <tbody>
+                                    
+                                    <tr class="trline">
+                                        <td class="tdleft">分类</td>
+                                        <td class="tdright">
+                                            <div class="tab-categories">
+                                                <ul>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/CSS/">CSS</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/JavaScript/">JavaScript</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/readlist/">readlist</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/工程/">工程</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/运维/">运维</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/随笔/">随笔</a>
+                                                    </li>
+                                                
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- <tr>
+                                        <td class="tdleft">标签</td>
+                                        <td class="tdright">
+                                            <div class="tab-tags">
+                                                <a href="/tags/个人总结/" style="font-size: 12px;">个人总结</a> <a href="/tags/阅读整理/" style="font-size: 12px;">阅读整理</a> <a href="/tags/杂感/" style="font-size: 12px;">杂感</a>
+                                            </div>
+                                        </td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+                
+                
+                <li class="gnli">
+                    <a class="gna" href="/archives/" title="">
+                        <span class="fa fa-archive"></span>归档
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/about/" title="">
+                        <span class="fa fa-user"></span>关于
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/2017-08-29-readlist" title="">
+                        <span class="fa fa-book"></span>阅读列表
+                    </a>
+                </li>
+                
+                
+                
+            </ul>
+        </div>
+    </div>
+        <div id="motto">
+            
+        </div>
+</div>
+
+    <div id="content">
+    <div class="container clearfix">
+        <div id="primary" class="no-toc">
+            
+            <div class="breadcrumb-navigation">
+                <a rel="bookmark" href="/">
+                    主页
+                </a>
+                <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                 
+<a href="/categories/运维/" title="运维" rel="category tag">运维</a>
+
+                    <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                    mysql修改root密码
+            </div>
+            
+            <div class="single-post">
+              
+                <div class="post-header">
+                    <h2 class="post-title">
+                        <a href="/2017-06-06-mysql修改root密码/" title="mysql修改root密码">
+                            mysql修改root密码
+                        </a>
+                    </h2>
+                </div>
+              
+                 <div class="post-meta">
+                    <ul class="inline-ul">
+                        <li class="inline-li">
+                            2017-06-06
+                        </li>
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                             
+<a href="/categories/运维/" title="运维" rel="category tag">运维</a>
+
+                        </li>
+                        
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                            <span id="busuanzi_value_page_pv"></span> Views
+                        </li>
+                        
+                    </ul>
+                </div>
+                <div class="post-body clearfix">
+                    <div class="post-content">
+                        
+                                <p>一直没有从零开始倒腾过mysql，用的都是别人配置好的东西，安装、配置、修改root密码这些都没做过，就试了一下，坑比较多，需要填</p>
+<p>操作系统：macOS 10.12.4</p>
+<p>Mysql：MySQL Community Server 5.7.18</p>
+<p>first：下载安装包，<a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener">mysql官网</a>下载</p>
+<p>second：安装，首次安装到最后会提示root的初始密码，这个密码记不记不太重要</p>
+<p>third：修改root密码</p>
+<pre><code>1. sudo mysqld_safe --skip-grant-tables，进入安全模式
+2. mysql -u root -p ，输入任意密码登录root
+3. UPDATE mysql.user SET authentication_string=PASSWORD(‘123456’) where User=’root’; //将root用户密码改成 123456
+4. flush privileges;  刷新权限，使配置生效
+5. 输入mysql -u root -p命令，接着输入刚刚设置的密码，如果可以登录说明修改成功，则不需要进行下一步
+6. 如果在第5步中出现your password has expired. to log in you must change it using a client that supports expired passwords错误，说明密码过期需要将密码过期字段设置为‘N’
+7. use mysql 
+8. select * from mysql.user where user=&apos;root&apos; \G
+9. update user set password_expired=&apos;N&apos; where user=&apos;root&apos;;
+10. flush privileges;  刷新权限，使配置生效
+最后退出mysql，重新mysql
+</code></pre><p>折腾完mac上的mysql之后，又倒腾了一下centos server上的mysql</p>
+<p>操作系统：CentOs 7.3</p>
+<p><a href="https://dev.mysql.com/downloads/file/?id=469881" target="_blank" rel="noopener">Mysql: 7.5.6</a></p>
+<p>下载的是二进制包，直接解压缩即可</p>
+<p>first：创建mysql用户账号，<code>useradd -s /sbin/nologin -M mysql</code></p>
+<p>second：修改配置文件，配置文件一般放在<code>/etc下，/etc/my.cnf</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">[client]</span><br><span class="line">port = 3306</span><br><span class="line">socket = /path-to-mysql/mysql.sock</span><br><span class="line">default-character-set = utf8</span><br><span class="line">[mysqld]</span><br><span class="line">skip-name-resolve</span><br><span class="line">user = mysql</span><br><span class="line">basedir = /path-to-mysql</span><br><span class="line">datadir = /path-to-mysql/data</span><br><span class="line">port = 3306</span><br><span class="line">server_id = 10</span><br><span class="line">socket = /path-to-mysql/mysql.sock</span><br><span class="line">pid-file = /path-to-mysql/mysql.pid</span><br><span class="line">log-error = /path-to-mysql/data/mysql.err</span><br><span class="line">log-bin = /path-to-mysql/data/mysql-bin</span><br><span class="line">character-set-server = utf8</span><br></pre></td></tr></table></figure>
+<p> third：初始化数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">chown -R mysql.mysql /data/mysq56</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">/path-to-mysql/bin/mysql_install_db --defaults-file=/etc/my.cnf --user=mysql --basedir=/data/mysql56 --datadir=/data/mysql56/data</span><br></pre></td></tr></table></figure>
+<p>forth：修改密码，参考mac部分</p>
+<p>fifth：配置远程连接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GRANT ALL PRIVILEGES ON *.* TO username@&apos;%&apos; IDENTIFIED BY &apos;password&apos; WITH GRANT OPTION;</span><br><span class="line">FLUSH   PRIVILEGES;</span><br></pre></td></tr></table></figure>
+<p>至此，完美结束！</p>
+<p>如果不可以进行远程连接，可以尝试一下解决方案：</p>
+<p>查看mysql置文件</p>
+<p>vi /etc/my.cnf</p>
+<p>特别要留意其中的两项：bind_address和skip_networking,bind_address一定不能为127.0.0.1，否则只能在本地连接，skip_networking一定不能出现，否则只接受unix socket而不能提供tcp socket服务，建议将bind_address和skip_networking直接都注释掉。</p>
+
+                    </div>
+                </div>
+                  
+                <div class="post-tags">
+                    
+                        
+                            <a href="/tags/个人总结/" title="个人总结" rel="tag" class="fa fa-tag">
+                                个人总结
+                            </a>
+                            
+                                
+                </div>
+                <ul class="pager">
+
+    <li class="previous">
+        <a href="/2017-08-13-rollerCoaster遇到的问题整理/" title="rollerCoaster遇到的问题整理" class="tooltipped tooltipped-n" aria-label="rollerCoaster遇到的问题整理"><i class="fa fa-chevron-left"></i> 上一篇文章</a>
+    </li>
+    
+    
+    <li class="next">
+        <a href="/2017-04-26-在网页中确定鼠标、元素的位置/" title="在网页中确定鼠标、元素的位置" class="tooltipped tooltipped-n" aria-label="在网页中确定鼠标、元素的位置">下一篇文章 <i class="fa fa-chevron-right"></i></a>
+    </li>
+    
+</ul>
+
+                  
+            </div>
+              
+            
+<div id="container"  style="margin-top: 70px"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+    owner: 'Spades-S',
+    repo: 'SpadesComments',
+    oauth: {
+        client_id: '97c0bf26004470371f4e',
+        client_secret: '2cc70304d7b9e02d6dd486319038673daebab9d9',
+    },
+    })
+gitment.render('container')
+</script>
+
+
+              
+        </div>
+        <!-- #primary -->
+        
+    </div>
+     
+
+</div>
+    <!-- Footer -->
+    
+<!-- #content -->
+<div id="footer">
+    <div class="container">
+        <p>
+            <span class="cc-license">
+                <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" title="Creative Commons license by-sa">
+                <i class="cc cc-cc"></i>
+                
+                    <i class="cc cc-by"></i>
+                
+                    <i class="cc cc-sa"></i>
+                
+                </a>
+            </span>
+            2017.2-2018 Spades.
+        </p>
+        <p>Themed by <a href="https://github.com/unnamed42/hexo-theme-kunkka">Kunkka</a> | Powered by <a href="https://hexo.io/">Hexo</a>.</p>
+        
+
+
+<div class="sns-icons">
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+</div>
+
+
+    </div>
+</div>
+<!-- #footer -->
+
+    <!-- Totop -->
+<div id="backtoTop" data-action="gototop" title="送你上天">
+    <canvas id="backtoTopCanvas" width="48" height="48"></canvas>
+    <div class="percentage"></div>
+</div>
+
+<script src="/js/totop.js" type="text/javascript" async></script>
+
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</body>
+
+</html>

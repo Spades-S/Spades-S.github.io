@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+<!-- Head tag -->
+<head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    
+    <title>
+    
+        css中的居中 - 
+    
+    Spades
+    </title>
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="Warning: inexperienced programmer inside!">
+    <meta name="author" content="Dr. A. Clef">
+    
+    <link rel="alternate" type="application/atom+xml" hrel="/atom.xml">
+    
+    <link rel="Shortcut Icon" href="/favicon.ico" type="image/x-icon">
+    
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/responsive.css" rel="stylesheet" type="text/css" media="screen and (max-width: 768px)">
+    <link href="https://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.bootcss.com/cc-icons/1.2.1/css/cc-icons.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+    <script src="/js/dropdown.js" type="text/javascript" async></script>
+    <script src="/js/sidebar.js" type="text/javascript" async></script>
+    
+</head>
+
+
+<body class="single">
+    <div id="header">
+    <div class="container clearfix">
+        <div class="logo" style="width: auto;">
+            <a href="/" title="Spades" rel="home" style="text-decoration: none;">
+                
+                <span class="brand-logo">
+                    
+                    Spades
+                    
+                
+                </span>
+            </a>
+        </div>
+        
+<form method="get" class="search-form" action="/search.html">
+    <input type="text" name="s" class="search-input" placeholder="输入关键词" />
+    <button type="submit" class="search-submit">
+        <span class="fa fa-search"></span>
+    </button>
+</form>
+
+
+        <div class="global-nav">
+            <ul class="gnul">
+                <li class="gnli ">
+                    <a class="gna" href="/" title="Spades">
+                        <span class="fa fa-home"></span><span>主页</span>
+                    </a>
+                </li>
+                
+                <li class="gnli dropdown current">
+                    <a class="gna dropdown-link fa fa-bars" href="javascript:;">
+                        <span>导航</span>
+                    </a>
+                    <div class="dropdown-arrow1"></div>
+                    <div class="dropdown-arrow2"></div>
+                    <div class="submenu">
+                        <div class="tab-content">
+                            <table>
+                                <tbody>
+                                    
+                                    <tr class="trline">
+                                        <td class="tdleft">分类</td>
+                                        <td class="tdright">
+                                            <div class="tab-categories">
+                                                <ul>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/CSS/">CSS</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/JavaScript/">JavaScript</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/readlist/">readlist</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/工程/">工程</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/运维/">运维</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/随笔/">随笔</a>
+                                                    </li>
+                                                
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- <tr>
+                                        <td class="tdleft">标签</td>
+                                        <td class="tdright">
+                                            <div class="tab-tags">
+                                                <a href="/tags/个人总结/" style="font-size: 12px;">个人总结</a> <a href="/tags/阅读整理/" style="font-size: 12px;">阅读整理</a> <a href="/tags/杂感/" style="font-size: 12px;">杂感</a>
+                                            </div>
+                                        </td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+                
+                
+                <li class="gnli">
+                    <a class="gna" href="/archives/" title="">
+                        <span class="fa fa-archive"></span>归档
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/about/" title="">
+                        <span class="fa fa-user"></span>关于
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/2017-08-29-readlist" title="">
+                        <span class="fa fa-book"></span>阅读列表
+                    </a>
+                </li>
+                
+                
+                
+            </ul>
+        </div>
+    </div>
+        <div id="motto">
+            
+        </div>
+</div>
+
+    <div id="content">
+    <div class="container clearfix">
+        <div id="primary" class="no-toc">
+            
+            <div class="breadcrumb-navigation">
+                <a rel="bookmark" href="/">
+                    主页
+                </a>
+                <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                 
+<a href="/categories/CSS/" title="CSS" rel="category tag">CSS</a>
+
+                    <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                    css中的居中
+            </div>
+            
+            <div class="single-post">
+              
+                <div class="post-header">
+                    <h2 class="post-title">
+                        <a href="/2017-02-08-css中的居中/" title="css中的居中">
+                            css中的居中
+                        </a>
+                    </h2>
+                </div>
+              
+                 <div class="post-meta">
+                    <ul class="inline-ul">
+                        <li class="inline-li">
+                            2017-02-08
+                        </li>
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                             
+<a href="/categories/CSS/" title="CSS" rel="category tag">CSS</a>
+
+                        </li>
+                        
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                            <span id="busuanzi_value_page_pv"></span> Views
+                        </li>
+                        
+                    </ul>
+                </div>
+                <div class="post-body clearfix">
+                    <div class="post-content">
+                        
+                                <p><a href="https://css-tricks.com/centering-css-complete-guide/?utm_source=ourjs.com" target="_blank" rel="noopener">原文：<strong>Centering in CSS: A Complete Guide</strong></a></p>
+<h3 id="水平居中"><a href="#水平居中" class="headerlink" title="水平居中"></a>水平居中</h3><ul>
+<li><p>内联元素：通过text-align属性设置其基于父元素对齐</p>
+</li>
+<li><p>块级元素：当设置了宽度时，可以将margin-left和margin-right设置为auto，使其水平对齐。但宽度设置为100%时，将看不到对齐效果</p>
+</li>
+<li><p>不止一个块级元素：将块级元素的display属性设置为inline-block，利用内联的性质将其设为居中</p>
+<p>各个块级框并排排列</p>
+</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">main</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span>this is a dog<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span>this is a cat<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span>this is a pig<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">main</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">main</span>&#123;</span><br><span class="line">  <span class="attribute">text-align</span>: center;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-tag">main</span> <span class="selector-tag">div</span>&#123;</span><br><span class="line">  <span class="attribute">display</span>: inline-block;</span><br><span class="line">  <span class="attribute">text-align</span>: left;</span><br><span class="line">  <span class="attribute">width</span>: <span class="number">100px</span>;</span><br><span class="line">  <span class="attribute">background-color</span>: <span class="number">#bebebe</span>;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">5px</span>;</span><br><span class="line">  <span class="attribute">margin</span>:<span class="number">20px</span> auto;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="垂直居中"><a href="#垂直居中" class="headerlink" title="垂直居中"></a>垂直居中</h3><ul>
+<li><p>内联元素</p>
+<ul>
+<li>如果是单行：可以通过设置padding-top、padding-bottom为相同的值，实现垂直居中；因为某种原因padding没有办法用的时候，将line-height设置为height也可以实现居中效果</li>
+<li>多行：可以设置padding-top和padding-bottom值相等；如果不行，将display设置为table-cell，vertical-align属性设置为middle实现垂直居中</li>
+</ul>
+</li>
+<li><p>块级元素</p>
+<ul>
+<li>如果知道元素高度：可以根据具体的值进行设置（不能适用多种设备，太过绝对化）</li>
+<li>不知道元素高度：设置其高度为父元素高度的一半，再将其上移自身高度的一半（利用transform性质）</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">selector</span>&#123;</span><br><span class="line">  <span class="attribute">top</span>: <span class="number">50%</span>;</span><br><span class="line">  <span class="attribute">transform</span>: <span class="built_in">translateY</span>(-50%);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="同时设置水平、垂直居中"><a href="#同时设置水平、垂直居中" class="headerlink" title="同时设置水平、垂直居中"></a>同时设置水平、垂直居中</h3><ul>
+<li>如果知道具体的宽和高：通过设置具体的值使其实现居中效果</li>
+<li>不知道具体宽和高：通过transform性质进行设置</li>
+</ul>
+
+                    </div>
+                </div>
+                  
+                <div class="post-tags">
+                    
+                        
+                            <a href="/tags/阅读整理/" title="阅读整理" rel="tag" class="fa fa-tag">
+                                阅读整理
+                            </a>
+                            
+                                
+                </div>
+                <ul class="pager">
+
+    <li class="previous">
+        <a href="/2017-02-11-Chrome-Ajax-http方式无法读取本地文件mac下解决方法/" title="Chrome+Ajax:$http方式无法读取本地文件mac下解决方法" class="tooltipped tooltipped-n" aria-label="Chrome+Ajax:$http方式无法读取本地文件mac下解决方法"><i class="fa fa-chevron-left"></i> 上一篇文章</a>
+    </li>
+    
+    
+</ul>
+
+                  
+            </div>
+              
+            
+<div id="container"  style="margin-top: 70px"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+    owner: 'Spades-S',
+    repo: 'SpadesComments',
+    oauth: {
+        client_id: '97c0bf26004470371f4e',
+        client_secret: '2cc70304d7b9e02d6dd486319038673daebab9d9',
+    },
+    })
+gitment.render('container')
+</script>
+
+
+              
+        </div>
+        <!-- #primary -->
+        
+    </div>
+     
+
+</div>
+    <!-- Footer -->
+    
+<!-- #content -->
+<div id="footer">
+    <div class="container">
+        <p>
+            <span class="cc-license">
+                <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" title="Creative Commons license by-sa">
+                <i class="cc cc-cc"></i>
+                
+                    <i class="cc cc-by"></i>
+                
+                    <i class="cc cc-sa"></i>
+                
+                </a>
+            </span>
+            2017.2-2018 Spades.
+        </p>
+        <p>Themed by <a href="https://github.com/unnamed42/hexo-theme-kunkka">Kunkka</a> | Powered by <a href="https://hexo.io/">Hexo</a>.</p>
+        
+
+
+<div class="sns-icons">
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+</div>
+
+
+    </div>
+</div>
+<!-- #footer -->
+
+    <!-- Totop -->
+<div id="backtoTop" data-action="gototop" title="送你上天">
+    <canvas id="backtoTopCanvas" width="48" height="48"></canvas>
+    <div class="percentage"></div>
+</div>
+
+<script src="/js/totop.js" type="text/javascript" async></script>
+
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</body>
+
+</html>

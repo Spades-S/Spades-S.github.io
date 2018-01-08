@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+<!-- Head tag -->
+<head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    
+    <title>
+    
+        清除浮动 - 
+    
+    Spades
+    </title>
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="Warning: inexperienced programmer inside!">
+    <meta name="author" content="Dr. A. Clef">
+    
+    <link rel="alternate" type="application/atom+xml" hrel="/atom.xml">
+    
+    <link rel="Shortcut Icon" href="/favicon.ico" type="image/x-icon">
+    
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/responsive.css" rel="stylesheet" type="text/css" media="screen and (max-width: 768px)">
+    <link href="https://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.bootcss.com/cc-icons/1.2.1/css/cc-icons.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+    <script src="/js/dropdown.js" type="text/javascript" async></script>
+    <script src="/js/sidebar.js" type="text/javascript" async></script>
+    
+</head>
+
+
+<body class="single">
+    <div id="header">
+    <div class="container clearfix">
+        <div class="logo" style="width: auto;">
+            <a href="/" title="Spades" rel="home" style="text-decoration: none;">
+                
+                <span class="brand-logo">
+                    
+                    Spades
+                    
+                
+                </span>
+            </a>
+        </div>
+        
+<form method="get" class="search-form" action="/search.html">
+    <input type="text" name="s" class="search-input" placeholder="输入关键词" />
+    <button type="submit" class="search-submit">
+        <span class="fa fa-search"></span>
+    </button>
+</form>
+
+
+        <div class="global-nav">
+            <ul class="gnul">
+                <li class="gnli ">
+                    <a class="gna" href="/" title="Spades">
+                        <span class="fa fa-home"></span><span>主页</span>
+                    </a>
+                </li>
+                
+                <li class="gnli dropdown current">
+                    <a class="gna dropdown-link fa fa-bars" href="javascript:;">
+                        <span>导航</span>
+                    </a>
+                    <div class="dropdown-arrow1"></div>
+                    <div class="dropdown-arrow2"></div>
+                    <div class="submenu">
+                        <div class="tab-content">
+                            <table>
+                                <tbody>
+                                    
+                                    <tr class="trline">
+                                        <td class="tdleft">分类</td>
+                                        <td class="tdright">
+                                            <div class="tab-categories">
+                                                <ul>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/CSS/">CSS</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/JavaScript/">JavaScript</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/readlist/">readlist</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/工程/">工程</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/运维/">运维</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/随笔/">随笔</a>
+                                                    </li>
+                                                
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- <tr>
+                                        <td class="tdleft">标签</td>
+                                        <td class="tdright">
+                                            <div class="tab-tags">
+                                                <a href="/tags/个人总结/" style="font-size: 12px;">个人总结</a> <a href="/tags/阅读整理/" style="font-size: 12px;">阅读整理</a> <a href="/tags/杂感/" style="font-size: 12px;">杂感</a>
+                                            </div>
+                                        </td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+                
+                
+                <li class="gnli">
+                    <a class="gna" href="/archives/" title="">
+                        <span class="fa fa-archive"></span>归档
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/about/" title="">
+                        <span class="fa fa-user"></span>关于
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/2017-08-29-readlist" title="">
+                        <span class="fa fa-book"></span>阅读列表
+                    </a>
+                </li>
+                
+                
+                
+            </ul>
+        </div>
+    </div>
+        <div id="motto">
+            
+        </div>
+</div>
+
+    <div id="content">
+    <div class="container clearfix">
+        <div id="primary" class="no-toc">
+            
+            <div class="breadcrumb-navigation">
+                <a rel="bookmark" href="/">
+                    主页
+                </a>
+                <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                 
+<a href="/categories/CSS/" title="CSS" rel="category tag">CSS</a>
+
+                    <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                    清除浮动
+            </div>
+            
+            <div class="single-post">
+              
+                <div class="post-header">
+                    <h2 class="post-title">
+                        <a href="/2017-12-31-清除浮动/" title="清除浮动">
+                            清除浮动
+                        </a>
+                    </h2>
+                </div>
+              
+                 <div class="post-meta">
+                    <ul class="inline-ul">
+                        <li class="inline-li">
+                            2017-12-31
+                        </li>
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                             
+<a href="/categories/CSS/" title="CSS" rel="category tag">CSS</a>
+
+                        </li>
+                        
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                            <span id="busuanzi_value_page_pv"></span> Views
+                        </li>
+                        
+                    </ul>
+                </div>
+                <div class="post-body clearfix">
+                    <div class="post-content">
+                        
+                                <blockquote>
+<p>很久没有更新过博客了，看了下归档，最新的一篇是11月份写的，再往前就是只能追溯到8月份了，但是今天已经是17年的最后一天了，间隔太久了。除了更新间隔太久之外，博文的质量总体不高，大多只能算是“摘录”，内化的东西比较少。趁着这个机会整理了一下博客，把一些没有必要的都删掉了。往后博客还是得有个固定的更新时间，毕竟<code>output is input</code> ，写博文也是重要的一环。</p>
+<p>也顺势对分类和标签做个规定吧，分类按照其本义，对博文进行分类，标签呢，就放两个吧，{个人总结+阅读摘录}，具体表述可能会变化，但是总体上是这两个意思。</p>
+</blockquote>
+<p>2017年里，写了两篇关于清除浮动的博文，一篇是经典文章<a href="http://nicolasgallagher.com/micro-clearfix-hack/" target="_blank" rel="noopener">A new micro clearfix hack</a>的翻译，另一篇写的非常水，我自己都看不明白写的是个啥（这两篇博文现在已经删了）。正好前段时间看了些关于清除浮动的资料，有了一点自己的看法，做一个总结。</p>
+<p>——————————————————————————————————————————————————</p>
+<p>首先我们需要明确的一点是，清除浮动到底清除的是什么？浮动效果由float属性产生，可以使元素脱离常规文档流，有可能会导致浮动元素父级元素对象盒子不能被撑开，形成高度塌陷。到这儿，我们应该清楚，所谓的清除浮动，就是消除由浮动造成的高度塌陷问题。</p>
+<img src="/2017-12-31-清除浮动/clearfix-1.png">
+<p>上图所展示的就是一个典型的浮动塌陷，左半部分是显示效果，右半部分是代码。图中代码想实现的效果如下：</p>
+<img src="/2017-12-31-清除浮动/clearfix-2.png">
+<p>设置了背景的outer容器应该包含inner容器。</p>
+<p>在出现浮动塌陷的时候，就需要我们去做一些hack，让想要的效果显示出来。怎么去做hack呢？按照原理来分，可以分为两类，clear:both 和 生成BFC。 </p>
+<ul>
+<li>clear:both</li>
+</ul>
+<p>首先来看一下clear:both，这可能是最古老的清除浮动的方式了（具体是不是最古老还有待考证）。使用clear:both 的常规操作：<br>在浮动元素下，加一个div，将其CSS属性设置为：<code>clear:both</code></p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="css">        <span class="selector-class">.outer</span> &#123;</span></span><br><span class="line"><span class="undefined">            padding: 20px;</span></span><br><span class="line"><span class="undefined">            width: 100%;</span></span><br><span class="line"><span class="undefined">            background: url(./b.jpg)</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="css">        <span class="selector-class">.inner</span> &#123;</span></span><br><span class="line"><span class="undefined">            float: left;</span></span><br><span class="line"><span class="undefined">            width: 50%;</span></span><br><span class="line"><span class="undefined">            height: 200px;</span></span><br><span class="line"><span class="undefined">            border: 1px solid red;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">    </span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"outer"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"inner"</span>&gt;</span> inner<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">style</span>=<span class="string">"clear:both"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在添加完<code>clear:both</code>这个div之后，刷新一下，发现塌陷问题真的不见了。</p>
+<p>但是这是什么原理呢？为了更容易观察，将<code>clear:both</code>这个div背景设为紫色，设置其高度为20px，效果如下：</p>
+<img src="/2017-12-31-清除浮动/clearfix-3.png">
+<p><strong>如果将<code>clear:both</code>这个属性去掉，会出现什么样的效果呢?</strong></p>
+<p>利用devtools取消clear属性，发现<code>clear:both</code>div 最上面的边界是和<code>float</code>div最上面的边界等高的。因为float-div脱离了常规文档流，但并不会影响常规文档流的布局。</p>
+<img src="/2017-12-31-清除浮动/clearfix-5.png">
+<p>而<code>clear:both</code>起到的作用就是，将<code>clear:both</code>div强行放到<code>float</code>div之后。我的理解，在float元素所在区域其实是不能存在常规文档流布局，那个区域是个真空区域。</p>
+<blockquote>
+<p>The clear CSS property specifies whether an element can be next to floating elements that precede it or must be moved down below them.  <strong>From MDN</strong></p>
+</blockquote>
+<ul>
+<li>BFC</li>
+</ul>
+<p>走过了远古时期，人类文明终于得到了进一步的发展。</p>
+<p>使用BFC的方式消除浮动塌陷，于我而言是一个比<code>clear:both</code>更加高级的方式，它不会影响HTML布局，不需要空标签。</p>
+<p>能够使用BFC的方式来清除浮动塌陷，原因在于：BFC是一个相对独立的区域，一个BFC会包含其中的所有子元素，无论浮动与否。</p>
+<blockquote>
+<p> in a <a href="https://www.w3.org/TR/css-display-3/#block-formatting-context" target="_blank" rel="noopener">block formatting context</a>, floated boxes affect the layout of surrounding boxes. But their effects do not escape their <a href="https://www.w3.org/TR/css-display-3/#formatting-context" target="_blank" rel="noopener">formatting context</a>: the box establishing their <a href="https://www.w3.org/TR/css-display-3/#formatting-context" target="_blank" rel="noopener">formatting context</a> grows to fully contain them, and floats from outside that box are not allowed to protrude into and affect the contents inside the box.                <strong>From W3C-Spec</strong></p>
+</blockquote>
+<p>可以通过设置一些特殊的属性生成BFC：</p>
+<ol>
+<li>the root element </li>
+<li>float the element</li>
+<li>ensure the computed value of <code>overflow</code> is not <code>visible</code></li>
+<li>set <code>display</code> to <code>inline-block, inline-table, table-cell or table-caption</code></li>
+<li>set <code>position</code> to something other than <code>static or relative</code></li>
+</ol>
+<ul>
+<li>modern solution</li>
+</ul>
+<p>社会在发展，人类在进步，解决浮动塌陷也有了现代化的方法，这个方法即<a href="http://nicolasgallagher.com/micro-clearfix-hack/" target="_blank" rel="noopener">A new micro clearfix hack</a>提及的方法：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.clearfix</span><span class="selector-pseudo">:afer</span>&#123;</span><br><span class="line">  <span class="attribute">content</span>:<span class="string">''</span>;</span><br><span class="line">  <span class="attribute">display</span>: block;</span><br><span class="line">  <span class="attribute">clear</span>: both;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>之所以会出现这个方法，是由于上述两种方法均存在缺陷，<code>clear</code>方法需要额外的标签，<code>BFC</code>方法由于需要设置<code>overflow</code>之类的属性，会对显示效果产生一定影响。</p>
+<p>但是这样还有可能会出现问题，<code>margin塌陷</code>，为了防止margin塌陷，可以将其改进为：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.clearfix</span><span class="selector-pseudo">:before</span>,</span><br><span class="line"><span class="selector-class">.clearfix</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">  <span class="attribute">content</span>: <span class="string">' '</span>;</span><br><span class="line">  <span class="attribute">display</span>: table;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.clearfix</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">  <span class="attribute">clear</span>: both;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个改进核心在于将<code>display</code>属性改为<code>table</code>，生成新的BFC，至于before伪元素，我觉得是可有可无的。</p>
+<blockquote>
+<p>在总结过程中，发现了一篇博文，<a href="https://www.fuseinteractive.ca/blog/understanding-humble-clearfix" target="_blank" rel="noopener">Understanding the Humble Clearfix</a>，我觉得是我看过的最好的讲清楚浮动的博文了，这篇博文也参考了<a href="https://www.fuseinteractive.ca/blog/understanding-humble-clearfix" target="_blank" rel="noopener">Understanding the Humble Clearfix</a></p>
+</blockquote>
+
+                    </div>
+                </div>
+                  
+                <div class="post-tags">
+                    
+                        
+                            <a href="/tags/个人总结/" title="个人总结" rel="tag" class="fa fa-tag">
+                                个人总结
+                            </a>
+                            
+                                
+                </div>
+                <ul class="pager">
+
+    <li class="previous">
+        <a href="/2018-01-01-bye，我的2017/" title="bye，我的2017" class="tooltipped tooltipped-n" aria-label="bye，我的2017"><i class="fa fa-chevron-left"></i> 上一篇文章</a>
+    </li>
+    
+    
+    <li class="next">
+        <a href="/2017-11-24-ghost-in-vertical-align/" title="ghost in vertical-align" class="tooltipped tooltipped-n" aria-label="ghost in vertical-align">下一篇文章 <i class="fa fa-chevron-right"></i></a>
+    </li>
+    
+</ul>
+
+                  
+            </div>
+              
+            
+<div id="container"  style="margin-top: 70px"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+    owner: 'Spades-S',
+    repo: 'SpadesComments',
+    oauth: {
+        client_id: '97c0bf26004470371f4e',
+        client_secret: '2cc70304d7b9e02d6dd486319038673daebab9d9',
+    },
+    })
+gitment.render('container')
+</script>
+
+
+              
+        </div>
+        <!-- #primary -->
+        
+    </div>
+     
+
+</div>
+    <!-- Footer -->
+    
+<!-- #content -->
+<div id="footer">
+    <div class="container">
+        <p>
+            <span class="cc-license">
+                <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" title="Creative Commons license by-sa">
+                <i class="cc cc-cc"></i>
+                
+                    <i class="cc cc-by"></i>
+                
+                    <i class="cc cc-sa"></i>
+                
+                </a>
+            </span>
+            2017.2-2018 Spades.
+        </p>
+        <p>Themed by <a href="https://github.com/unnamed42/hexo-theme-kunkka">Kunkka</a> | Powered by <a href="https://hexo.io/">Hexo</a>.</p>
+        
+
+
+<div class="sns-icons">
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+</div>
+
+
+    </div>
+</div>
+<!-- #footer -->
+
+    <!-- Totop -->
+<div id="backtoTop" data-action="gototop" title="送你上天">
+    <canvas id="backtoTopCanvas" width="48" height="48"></canvas>
+    <div class="percentage"></div>
+</div>
+
+<script src="/js/totop.js" type="text/javascript" async></script>
+
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</body>
+
+</html>
