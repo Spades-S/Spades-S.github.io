@@ -1,13 +1,7 @@
 "use strict";
+console.log('test')
 
-function stripper(content) {
-    var wrapper = $("<div>" + content + "</div>"); // .html() can oly get its first child, so wrap in a div
-    wrapper.find("script,style").remove(); // remove style/script in post content
-    $(".gutter", wrapper).remove(); // remove code line number
-    return wrapper.html();
-}
 
-/* https://stackoverflow.com/a/901144 */
 function getParameterByName(name, url) {
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, "\\$&");
@@ -21,15 +15,15 @@ function getParameterByName(name, url) {
 var searchFunc = function(path, search_str, content_id) {
     $.ajax({
         url: path,
-        dataType: "xml",
+        dataType: "json",
         success: function(response) {
-            var query = $("entry", response).map(function() {
+            var query = response.map(function(item) {
                     return {
-                        title: $("title", this).text(),
-                        content: stripper($("content", this).text()),
-                        url: $("url", this).text()
+                        title: item.title,
+                        content: item.content,
+                        url: item.url
                     }
-                }).get(),
+                }),
                 container = document.getElementById(content_id);
             if (search_str.trim().length > 0) {
                 var html = '<div class="search-result-list">',
@@ -94,6 +88,9 @@ var searchFunc = function(path, search_str, content_id) {
                 html += "</div>"; // div.search-result-list
                 container.innerHTML = html;
             }
+        },
+        error: function(err) {
+            console.log(err)
         }
     })
 };
