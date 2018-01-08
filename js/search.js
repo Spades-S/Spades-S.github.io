@@ -1,5 +1,4 @@
 "use strict";
-console.log('test')
 
 
 function getParameterByName(name, url) {
@@ -17,6 +16,7 @@ var searchFunc = function(path, search_str, content_id) {
         url: path,
         dataType: "json",
         success: function(response) {
+            console.log(response)
             var query = response.map(function(item) {
                     return {
                         title: item.title,
@@ -25,11 +25,14 @@ var searchFunc = function(path, search_str, content_id) {
                     }
                 }),
                 container = document.getElementById(content_id);
-            if (search_str.trim().length > 0) {
+            if (search_str.trim().length > 0 && query.length > 0) {
                 var html = '<div class="search-result-list">',
                     keywords = search_str.trim().toLowerCase().split(/[\s\-]+/);
                 container.innerHTML = "";
                 query.forEach(function(data) {
+                    if (data.title === 'about') {
+                        return
+                    }
                     var isMatch = true;
                     var content_index = [];
                     var data_title = data.title.trim().toLowerCase();
