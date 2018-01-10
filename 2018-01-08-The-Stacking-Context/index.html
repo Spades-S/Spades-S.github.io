@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+
+<!-- Head tag -->
+<head>
+    
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    
+    <title>
+    
+        The-Stacking-Context - 
+    
+    Spades
+    </title>
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="Warning: inexperienced programmer inside!">
+    <meta name="author" content="Dr. A. Clef">
+    
+    <link rel="alternate" type="application/atom+xml" hrel="/atom.xml">
+    
+    <link rel="Shortcut Icon" href="/favicon.ico" type="image/x-icon">
+    
+    <link href="/css/style.css" rel="stylesheet" type="text/css">
+    <link href="/css/responsive.css" rel="stylesheet" type="text/css" media="screen and (max-width: 768px)">
+    <link href="https://cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.bootcss.com/cc-icons/1.2.1/css/cc-icons.min.css" rel="stylesheet" type="text/css">
+    <script src="https://cdn.bootcss.com/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min.js"></script>
+    <script src="/js/dropdown.js" type="text/javascript" async></script>
+    <script src="/js/sidebar.js" type="text/javascript" async></script>
+    
+</head>
+
+
+<body class="single">
+    <div id="header">
+    <div class="container clearfix">
+        <div class="logo" style="width: auto;">
+            <a href="/" title="Spades" rel="home" style="text-decoration: none;">
+                
+                <span class="brand-logo">
+                    
+                    Spades
+                    
+                
+                </span>
+            </a>
+        </div>
+        
+<form method="get" class="search-form" action="/search.html">
+    <input type="text" name="s" class="search-input" placeholder="输入关键词" />
+    <button type="submit" class="search-submit">
+        <span class="fa fa-search"></span>
+    </button>
+</form>
+
+
+        <div class="global-nav">
+            <ul class="gnul">
+                <li class="gnli ">
+                    <a class="gna" href="/" title="Spades">
+                        <span class="fa fa-home"></span><span>主页</span>
+                    </a>
+                </li>
+                
+                <li class="gnli dropdown current">
+                    <a class="gna dropdown-link fa fa-bars" href="javascript:;">
+                        <span>导航</span>
+                    </a>
+                    <div class="dropdown-arrow1"></div>
+                    <div class="dropdown-arrow2"></div>
+                    <div class="submenu">
+                        <div class="tab-content">
+                            <table>
+                                <tbody>
+                                    
+                                    <tr class="trline">
+                                        <td class="tdleft">分类</td>
+                                        <td class="tdright">
+                                            <div class="tab-categories">
+                                                <ul>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/CSS/">CSS</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/JavaScript/">JavaScript</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/readlist/">readlist</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/工程/">工程</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/运维/">运维</a>
+                                                    </li>
+                                                
+                                                    <li class="cat-item">
+                                                        <a href="/categories/随笔/">随笔</a>
+                                                    </li>
+                                                
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- <tr>
+                                        <td class="tdleft">标签</td>
+                                        <td class="tdright">
+                                            <div class="tab-tags">
+                                                <a href="/tags/阅读整理/" style="font-size: 12px;">阅读整理</a> <a href="/tags/个人总结/" style="font-size: 12px;">个人总结</a> <a href="/tags/杂感/" style="font-size: 12px;">杂感</a>
+                                            </div>
+                                        </td>
+                                    </tr> -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+                
+                
+                <li class="gnli">
+                    <a class="gna" href="/archives/" title="">
+                        <span class="fa fa-archive"></span>归档
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/about/" title="">
+                        <span class="fa fa-user"></span>关于
+                    </a>
+                </li>
+                
+                <li class="gnli">
+                    <a class="gna" href="/2017-08-29-readlist" title="">
+                        <span class="fa fa-book"></span>阅读列表
+                    </a>
+                </li>
+                
+                
+                
+            </ul>
+        </div>
+    </div>
+        <div id="motto">
+            
+        </div>
+</div>
+
+    <div id="content">
+    <div class="container clearfix">
+        <div id="primary" class="no-toc">
+            
+            <div class="breadcrumb-navigation">
+                <a rel="bookmark" href="/">
+                    主页
+                </a>
+                <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                 
+<a href="/categories/CSS/" title="CSS" rel="category tag">CSS</a>
+
+                    <span class="breadcrumb-arrow fa fa-angle-right"></span>
+                    The-Stacking-Context
+            </div>
+            
+            <div class="single-post">
+              
+                <div class="post-header">
+                    <h2 class="post-title">
+                        <a href="/2018-01-08-The-Stacking-Context/" title="The-Stacking-Context">
+                            The-Stacking-Context
+                        </a>
+                    </h2>
+                </div>
+              
+                 <div class="post-meta">
+                    <ul class="inline-ul">
+                        <li class="inline-li">
+                            2018-01-08
+                        </li>
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                             
+<a href="/categories/CSS/" title="CSS" rel="category tag">CSS</a>
+
+                        </li>
+                        
+                        
+                        <li class="inline-li">
+                            <span class="post-span">·</span>
+                        </li>
+                        <li class="inline-li">
+                            <span id="busuanzi_value_page_pv"></span> Views
+                        </li>
+                        
+                    </ul>
+                </div>
+                <div class="post-body clearfix">
+                    <div class="post-content">
+                        
+                                <p>CSS，Cascading Style Sheet，层叠样式表，从字面上来看CSS最关键的三点，层叠、样式、表，这三个关键点里，<code>样式</code>说明了CSS的作用目标、功用，<code>表</code>说明了CSS的长相，而<code>层叠</code>表述的是CSS自身有何特点。CSS这东西不比人，并不能因为姓名和长相而让使用者记住它，只有<code>层叠</code>这个特质，能够让人从万千事物中分辨出它。</p>
+<p>层叠，意味着<code>可覆盖</code>，用户只能够看到最上层的东西，开发者必须将最终要的东西放在最上面，让用户能够一眼就看到。为了实现这个目标，开发者必须弄懂页面是按照何种方式、何种顺序绘制层叠上下文的。</p>
+<p>在学习层叠上下文绘制顺序之前，我们需要了解什么情况下会生成层叠上下文。能够产生层叠上下文的常见情况：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">HTML文档的根元素；</span><br><span class="line">position属性值为absolute或者relative并且z-index值不为auto的元素；</span><br><span class="line">position属性值为fixed或者是sticky的元素(position:sticky在所有移动端浏览器上均生成层叠上下文，在老的pc浏览器上不会)；</span><br><span class="line">flex 容器里的元素，并且其z-index不为auto；</span><br><span class="line">opacity值小于1的元素；</span><br><span class="line">transform、filter属性值不为none的元素；</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p> 以上是我觉得比较常见的几种情况，当然这也只是一部分，全部情况可以参看<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context" target="_blank" rel="noopener">The stacking context</a>。</p>
+</blockquote>
+<p>现在我们可以去学习层叠上下文在页面绘制时是按照何种顺序进行绘制的了。<strong>需要强调的是下面说的顺序只在一个层叠上下文中适用</strong></p>
+<p><strong>from BACK  to FRONT</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">层叠上下文的根元素；</span><br><span class="line">z-index值为负数的定位元素(positioned elements)及其子元素；</span><br><span class="line">非定位元素(同为该种元素时按照HTML文档中的先后顺序)；</span><br><span class="line">z-index值为auto的定位元素及其子元素（同为该种元素时按照HTML文档中的先后顺序）；</span><br><span class="line">z-index值为正数的定位元素及其子元素；</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>又要当一次小偷了，<a href="https://philipwalton.com/articles/what-no-one-told-you-about-z-index/" target="_blank" rel="noopener">What No One Told You About Z-Index</a>这篇文章写的太好了，我不忍心去翻译，翻译出来的像狗啃过的（我还特地看了下左上角的intro，Philip Walton engineer @ Google，由衷感叹谷歌的工程师真牛逼）</p>
+</blockquote>
+<p>文章部分内容摘录如下：</p>
+<h3 id="Global-Stacking-Order"><a href="#Global-Stacking-Order" class="headerlink" title="Global Stacking Order"></a>Global Stacking Order</h3><p>With a firm understanding of how/when new stacking contexts are formed as well as a grasp of the stacking order within a stacking context, figuring out where a particular element will appear in the global stacking order isn’t so bad.</p>
+<p>The key to avoid getting tripped up is being able to spot when new stacking contexts are formed. If you’re setting a z-index of a billion on an element and it’s not moving forward in the stacking order, <strong>take a look up its ancestor tree and see if any of its parents form stacking contexts. If they do, your z-index of a billion isn’t going to do you any good</strong>.</p>
+<h3 id="Wrapping-Up"><a href="#Wrapping-Up" class="headerlink" title="Wrapping Up"></a>Wrapping Up</h3><p>Getting back to the original problem, I’ve recreated the HTML structure adding comments within each tag indicating its place in the stacking order. This order is assuming the original CSS.</p>
+<blockquote>
+<p>这块如果没有前文的CSS代码，是很难读懂的，CSS代码如下</p>
+<p>.red, .green, .blue {<br>  position: absolute;<br>}<br>.red {<br>  background: red;<br>  z-index: 1;<br>}<br>.green {<br>  background: green;<br>}<br>.blue {<br>  background: blue;<br>}</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="comment">&lt;!-- 1 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"red"</span>&gt;</span><span class="comment">&lt;!-- 6 --&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="comment">&lt;!-- 2 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"green"</span>&gt;</span><span class="comment">&lt;!-- 4 --&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="comment">&lt;!-- 3 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"blue"</span>&gt;</span><span class="comment">&lt;!-- 5 --&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这个地方为什么是先渲染了div ，然后才渲染其中的span呢？</p>
+<p><a href="https://www.w3.org/TR/CSS2/zindex.html" target="_blank" rel="noopener">spec</a>中的两条规则应该就是最合理的解释（标号沿用了文档中的标号）：</p>
+<p>4    *  For all its in-flow, non-positioned, block-level descendants in tree order: If the element is a block, list-item, or other block equivalent:</p>
+<ol>
+<li>background color of element.</li>
+<li>background image of element.</li>
+<li>border of element.</li>
+</ol>
+<p>7    * Otherwise: first for the element, then for all its in-flow, non-positioned, block-level descendants in tree order:</p>
+<ol>
+<li>If the element is a block-level replaced element, then: the replaced content, atomically.</li>
+<li>Otherwise, for each line box of that element:</li>
+</ol>
+<p>我的理解：在一个层叠上下文中，首先绘制的是在文档流中的非定位块级后代元素，然后是line-box（这里还是有待进一步考证）</p>
+</blockquote>
+<p>When we add the opacity rule to the first <code>&lt;div&gt;</code>, the stacking order changes like so:</p>
+<blockquote>
+<p>add opacity rule to the first div:</p>
+<p>div:first-child {<br>  opacity: .99;<br>}</p>
+</blockquote>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="comment">&lt;!-- 1 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"red"</span>&gt;</span><span class="comment">&lt;!-- 1.1 --&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="comment">&lt;!-- 2 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"green"</span>&gt;</span><span class="comment">&lt;!-- 4 --&gt;</span><span class="tag">&lt;<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span><span class="comment">&lt;!-- 3 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"blue"</span>&gt;</span><span class="comment">&lt;!-- 5 --&gt;</span><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><code>span.red</code> used to be <code>6</code> but it’s changed to <code>1.1</code>. I’ve used dot notation to show that a new stacking context was formed and <code>span.red</code> is now the first element within that new context.</p>
+<p>Hopefully it’s now a little more clear why the red box moved behind the other boxes. The original example contained only two stacking contexts, the root one and the one formed on <code>span.red</code>. When we added opacity to the parent element of <code>span.red</code> we formed a third stacking context and, as a result, the z-index value on <code>span.red</code> only applied within that new context. Because the first <code>&lt;div&gt;</code> (the one we applied opacity to) and its sibling elements do not have position or z-index values set, their stacking order is determined by their source order in the HTML, which means the first <code>&lt;div&gt;</code>, and all the elements contained within its stacking context, are rendered behind the second and third <code>&lt;div&gt;</code> elements.</p>
+<blockquote>
+<p>上面摘录的片段，最主要是用以说明<strong>z-index 是在positioned元素上起作用，z-index只影响该元素在父层叠上下文层级间的前后顺序</strong></p>
+<p> <strong>Importantly, the z-index values of its child stacking contexts only have meaning in this parent. From MDN</strong></p>
+</blockquote>
+<h3 id="conclusion"><a href="#conclusion" class="headerlink" title="conclusion"></a>conclusion</h3><ol>
+<li>opacity 小于0 形成的层叠上下文，最大的功用就是形成了层叠上下文，对层叠上下文中的层级并没有半点影响（个人感觉）</li>
+<li>如果真的想对层叠上下文有个更加深入的了解，还是看<a href="https://www.w3.org/TR/CSS2/zindex.html" target="_blank" rel="noopener">spec</a>比较好，层叠上下文中各个元素、子层叠上下文的渲染顺序是什么样的，<a href="https://www.w3.org/TR/CSS2/zindex.html" target="_blank" rel="noopener">spec</a>解释的应该是最全的了。</li>
+</ol>
+
+                    </div>
+                </div>
+                  
+                <div class="post-tags">
+                    
+                        
+                            <a href="/tags/个人总结/" title="个人总结" rel="tag" class="fa fa-tag">
+                                个人总结
+                            </a>
+                            
+                                
+                </div>
+                <ul class="pager">
+
+    
+    <li class="next">
+        <a href="/2018-01-01-bye，我的2017/" title="bye，我的2017" class="tooltipped tooltipped-n" aria-label="bye，我的2017">下一篇文章 <i class="fa fa-chevron-right"></i></a>
+    </li>
+    
+</ul>
+
+                  
+            </div>
+              
+            
+<div id="container"  style="margin-top: 70px"></div>
+<link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+    owner: 'Spades-S',
+    repo: 'SpadesComments',
+    oauth: {
+        client_id: '97c0bf26004470371f4e',
+        client_secret: '2cc70304d7b9e02d6dd486319038673daebab9d9',
+    },
+    })
+gitment.render('container')
+</script>
+
+
+              
+        </div>
+        <!-- #primary -->
+        
+    </div>
+     
+
+</div>
+    <!-- Footer -->
+    
+<!-- #content -->
+<div id="footer">
+    <div class="container">
+        <p>
+            <span class="cc-license">
+                <a href="https://creativecommons.org/licenses/by-sa/4.0" target="_blank" title="Creative Commons license by-sa">
+                <i class="cc cc-cc"></i>
+                
+                    <i class="cc cc-by"></i>
+                
+                    <i class="cc cc-sa"></i>
+                
+                </a>
+            </span>
+            2017.2-2018 Spades.
+        </p>
+        <p>Themed by <a href="https://github.com/unnamed42/hexo-theme-kunkka">Kunkka</a> | Powered by <a href="https://hexo.io/">Hexo</a>.</p>
+        
+
+
+<div class="sns-icons">
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+        
+        
+    
+</div>
+
+
+    </div>
+</div>
+<!-- #footer -->
+
+    <!-- Totop -->
+<div id="backtoTop" data-action="gototop" title="送你上天">
+    <canvas id="backtoTopCanvas" width="48" height="48"></canvas>
+    <div class="percentage"></div>
+</div>
+
+<script src="/js/totop.js" type="text/javascript" async></script>
+
+
+<script type="text/javascript" src="https://cdn.bootcss.com/mathjax/2.6.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML" async></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+            processEscapes: true,
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+    });
+</script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+            all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+</body>
+
+</html>

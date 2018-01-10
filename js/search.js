@@ -16,7 +16,6 @@ var searchFunc = function(path, search_str, content_id) {
         url: path,
         dataType: "json",
         success: function(response) {
-            console.log(response)
             var query = response.map(function(item) {
                     return {
                         title: item.title,
