@@ -13,7 +13,7 @@
     
     <title>
     
-        css权威指南-浮动和定位 - 
+        CSS-spec-visual-formatting-model - 
     
     Spades
     </title>
@@ -171,15 +171,15 @@
 <a href="/categories/CSS/" title="CSS" rel="category tag">CSS</a>
 
                     <span class="breadcrumb-arrow fa fa-angle-right"></span>
-                    css权威指南-浮动和定位
+                    CSS-spec-visual-formatting-model
             </div>
             
             <div class="single-post">
               
                 <div class="post-header">
                     <h2 class="post-title">
-                        <a href="/2018-03-08-css权威指南-浮动和定位/" title="css权威指南-浮动和定位">
-                            css权威指南-浮动和定位
+                        <a href="/2018-03-15-CSS-spec-visual-formatting-model/" title="CSS-spec-visual-formatting-model">
+                            CSS-spec-visual-formatting-model
                         </a>
                     </h2>
                 </div>
@@ -187,7 +187,7 @@
                  <div class="post-meta">
                     <ul class="inline-ul">
                         <li class="inline-li">
-                            2018-03-08
+                            2018-03-15
                         </li>
                         
                         <li class="inline-li">
@@ -212,66 +212,72 @@
                 <div class="post-body clearfix">
                     <div class="post-content">
                         
-                                <p>《CSS权威指南》里第二个有价值的章节。</p>
-<p>这一章的内容比较碎，如果在文章里堆积知识点，不会有太大的价值，不论是对我还是对这篇博文的读者。我挑了几个比较有意思的点，整理了一下。</p>
-<p><strong>1. 包含块</strong></p>
-<p>不论是浮动元素还是定位元素，它们浮动和定位均是相对于包含框来进行浮动、定位的。<strong>包含块——参考坐标系</strong></p>
-<p><strong>浮动元素</strong>：浮动元素的包含块是其最近的块级祖先元素</p>
-<p><strong>根元素</strong>：根元素的包含块( 初始包含块 )由用户代理建立，在大多数浏览器里，初始包含块是一个视窗大小的矩形</p>
-<p><strong>position : static/relative的非根元素</strong>：包含块由最近的块级框、表单元格或者行内块祖先框的内容边界构成</p>
-<p><strong>position : absolute的非根元素</strong>：包含块为最近的position值不是static的祖先元素。如果祖先元素是<strong>块级元素</strong>，包含块为<strong>该元素的内边距边界</strong>；如果祖先元素是<strong>行内元素</strong>，包含块为<strong>该元素的内容边界</strong>；如果没有祖先，包含块为初始包含块</p>
-<p><strong>position : fixed</strong>：包含块是视窗</p>
-<p><strong>2. 浮动、定位对元素本身的影响</strong></p>
+                                <blockquote>
+<p>不论是以理论为本的《CSS权威指南》还是主打工程经验的《CSS世界》，在一些概念上总给人一种含糊不清的感觉。不得已只能看<a href="https://www.w3.org/TR/CSS2/visuren.html" target="_blank" rel="noopener">css-spec</a>，也只有spec讲的透彻。不管是《权威指南》还是《CSS世界》都经过了别人的理解消化，和spec本身还是有一定的出入。一千个人眼里有一千个哈姆雷特。</p>
+</blockquote>
+<p><strong>1. Block-level elements and block boxes（块级元素及其相关的盒子）</strong></p>
 <ul>
-<li><p>浮动</p>
-<ul>
-<li>浮动元素会以某种方式从正常文档流中移除，但<strong>仍旧影响布局</strong>。浮动元素同时处于流内和流外</li>
-<li>浮动元素<strong>会生成一个块级框，不论元素本身是块级或是行内元素</strong></li>
-<li>浮动元素周围的外边距不会合并 =&gt; float 不为none时会生成新的BFC，只有同一个BFC中的相邻margin才会合并</li>
-</ul>
+<li><p>Block-level box（块级框）</p>
+<p>块级框是由块级元素生成的基本框，块级框是在块级格式化上下文( Block formatting context )中的。</p>
 </li>
-<li><p>绝对定位元素</p>
-<ul>
-<li>绝对定位元素会从文档流中完全删除</li>
-<li>相对于其包含块定位，其边界根据偏移属性放置</li>
-<li>会为其后代元素建立一个包含块</li>
-</ul>
+<li><p>Block container（块容器）</p>
+<p>块容器包含:  { 除table boxes 和替换元素之外的块级框,  非替换inline blocks,  非替换table cells}。</p>
+<p><strong>一个块容器内要么只包含块级框( block-level boxes ) 要么只包含内联级框( inline-level boxes )</strong></p>
 </li>
-<li><p>固定定位元素</p>
-<ul>
-<li>固定定位元素会从文档流中去除</li>
-<li>相对于视窗定位</li>
-</ul>
-</li>
-<li><p>相对定位元素</p>
-<ul>
-<li><strong>只是从其正常的位置移走，原来所占的空间并不会因此消失</strong></li>
-</ul>
+<li><p>Block boxes（块框）</p>
+<p>那些是块容器的块级框又被称为块框，也就是<strong>除table boxes和替换元素之外的块级框又叫块框</strong></p>
 </li>
 </ul>
-<p><strong>3. 包裹性</strong></p>
-<p>当元素设置了浮动属性或者是进行了绝对定位、固定定位时，如果不显式设置元素宽度，元素会具有一定的包裹性，使其刚好能够容纳下当前内容。</p>
+<p><img src="/2018-03-15-CSS-spec-visual-formatting-model/img-1.png" width="700px">   图片来自<a href="https://stackoverflow.com/questions/30883857/css-spec-block-level-box-block-container-box-and-block-box" target="_blank" rel="noopener">stack overflow</a> ，侵删 </p>
+<p><strong>2. Inline-level elements and inline boxes（内联元素及其相关的盒子）</strong></p>
 <ul>
-<li><p>float</p>
-<p>当元素设置了浮动属性时，会有一些细微的变化。CSS权威指南上是这么表述的，<code>浮动元素会生成一个块级框，不论元素本身是块级还是行内元素</code>。不过我更加偏向于张鑫旭的表述，<code>撇开浮动的破坏性，浮动就是个带有方位的display:inline-block属性</code>。(详见<a href="http://www.zhangxinxu.com/wordpress/2010/01/css-float%E6%B5%AE%E5%8A%A8%E7%9A%84%E6%B7%B1%E5%85%A5%E7%A0%94%E7%A9%B6%E3%80%81%E8%AF%A6%E8%A7%A3%E5%8F%8A%E6%8B%93%E5%B1%95%E4%B8%80/" target="_blank" rel="noopener">float深入研究1-张鑫旭</a> 、 <a href="http://www.zhangxinxu.com/wordpress/2010/01/css-float%E6%B5%AE%E5%8A%A8%E7%9A%84%E6%B7%B1%E5%85%A5%E7%A0%94%E7%A9%B6%E3%80%81%E8%AF%A6%E8%A7%A3%E5%8F%8A%E6%8B%93%E5%B1%95%E4%BA%8C/" target="_blank" rel="noopener">float深入研究2-张鑫旭</a>) </p>
-<p>按照<strong>float是带有方位的display:inline-block属性</strong>来理解，<strong>由于display:inline-block会对元素产生包裹性</strong>，从而就不难解释元素设置了浮动属性后会对其自身产生包裹性。</p>
+<li><p>Inline-level box（内联级框）</p>
+<p>内联级框由内联元素生成，在内联格式化上下文中( Inline formatting context )</p>
 </li>
-<li><p>positon : absolute/fixed</p>
-<p>对于相对定位元素和绝对定位元素，除了不显示设置width值之外，还须保证left/right中至少有一个为auto，否则其宽度将是<code>left</code> 到 <code>right</code> 之间的距离</p>
+<li><p>Inline box（内联框）</p>
+<p>内容物在内联格式化上下文中的内联级框。<strong>display值为inline的非替换元素会生成内联框</strong></p>
+</li>
+<li><p>Atomic inline-level box （原子内联级框）</p>
+<p>不是内联框的内联级框，这么说其实有点绕，换一种说法，内容物不再内联格式化上下文中的，比如替换inline-level元素、inline-block元素、inline-table元素生成的内联级框</p>
+<p><img src="/2018-03-15-CSS-spec-visual-formatting-model/img-2.png" width="500px">     图片来自<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Visual_formatting_model" target="_blank" rel="noopener">MDN</a> ，侵删 </p>
+</li>
+<li><p>Anonymous inline boxes （匿名内联框）</p>
+<p>任何直接包含在块容器内部的文字都会生成匿名内联框。空白内容不会生成匿名块级框，空白内容受<strong>white-space属性</strong>控制</p>
 </li>
 </ul>
-<p><strong>4. 浮动为什么会导致父元素高度塌陷</strong></p>
-<p>首先需要了解高度是怎么产生的。这里引用张鑫旭的一段解释，<code>在目前的CSS世界里，所有的高度都是由两个CSS模型产生，一个是box盒状模型：height + padding + margin，另一个是line box模型，对应样式为line-height</code>  前者比较常见，后者对应文字等inline boxes元素。行内元素高度是怎么取得的呢？一个文本行是由若干个行内元素组成的。<strong>一个文本行的高度是由其行框高度 决定的，而行框高度则是由该行中出现的行内框的最高点和最低点决定的，行内框又和line-height值相等</strong>，从而 <code>文本行高度和该行中各个行内元素的line-height高度相关</code></p>
-<p>要想解释浮动使得父元素高度塌陷，需要先了解下张鑫旭对<strong>浮动的包裹性和破坏性</strong>的定义[ 我个人是认同张鑫旭的解释的 ]。   <code>浮动的包裹性让元素变成类似于inline-box元素，浮动的破坏性破坏的也正是inline-box</code>。包裹性上文已经说过了，现在来看一下破坏性有什么影响。</p>
-<p>浮动元素所在文本行的高度是由其中的行内框高度所决定的。当浮动的破坏性破坏了浮动元素的inline-box，也就相当于破坏了其行内框，对于所在的文本行，其中将不包含任何行内框，那么该行高度应变为0。对于浮动元素的父元素，其可见高度应该由内容区+padding+border构成，内容区高度和浮动元素所在行高有关，由于浮动，浮动元素所在行行高将变为0。此时，当浮动元素高度大于其父元素的<code>padding + border</code> 就会出现高度塌陷。</p>
-<p><strong>5. clear到底做了什么</strong></p>
-<p>设置了浮动可能会导致父元素高度塌陷，这个时候需要清除塌陷，清除塌陷可以利用 <code>clear</code> 属性来完成。那<code>clear</code> 属性到底做了啥呢？</p>
-<p>在CSS1和CSS2中，clear会增加元素的上外边距，使之最后落在浮动元素的下面。</p>
-<p>在CSS2.1中引入了清除区域，清除区域是在元素上外边距之上增加的额外间隔，不允许任何浮动元素进入这个范围内，也就是说元素设置clear属性，其外边距并不会改变，之所以下移是清除区域造成的。我在chrome中进行了测试，验证了清除区域的存在。</p>
-<p><strong>6. 定位元素如何放置、大小</strong></p>
-<p>这块不知道怎么整理，直接看书可能是更好的选择。<strong>《CSS权威指南》P327-P333</strong></p>
-<p><strong>7. 层叠上下文</strong></p>
-<p>具体参考博文<a href="https://spades-s.github.io/2018-01-08-The-Stacking-Context/">The-Stacking-Context</a></p>
+<p><strong>3. 盒子放置</strong></p>
+<p>在CSS2.1中，一个盒子能够放置在常规文档流中( Normal flow )，或者是“浮动流”( Floats )中，或者绝对定位流( Absolute positioning )中，绝对定位流包含了<strong>绝对定位和固定定位</strong>。浮动流和绝对定位流是我个人杜撰出来的名词🤡。</p>
+<blockquote>
+<p>In CSS 2.1, a box may be laid out according to three positioning schemes:</p>
+<ol>
+<li>Normal flow. In CSS 2.1, normal flow includes block formatting of block-level boxes, inline formatting of inline-level boxes, and relative positioning of block-level and inline-level boxes.</li>
+<li>Floats. In the float model, a box is first laid out according to the normal flow, then taken out of the flow and shifted to the left or right as far as possible. Content may flow along the side of a float.</li>
+<li>Absolute positioning. In the absolute positioning model, a box is removed from the normal flow entirely (it has no impact on later siblings) and assigned a position with respect to a containing block.</li>
+</ol>
+</blockquote>
+<p><strong>4. 格式化上下文（formatting context）</strong></p>
+<p>在常规文档流中的各种盒子是处在格式化上下文中的，块级盒子在块级格式化上下文( BFC )中，内联级盒子在内联格式化上下文( IFC )中。</p>
+<ul>
+<li>块级格式化上下文( BFC )<ul>
+<li>浮动元素、绝对定位元素、生成块容器且不生成块框的元素(inline-block元素、table-cell元素、table-captions元素)、生成块框且overflow属性不为visible的元素会<strong>为其内容物生成新的BFC</strong></li>
+<li>在同一个BFC中，相邻的垂直margin会塌陷( collapse ) ，[ <strong>我在其他博文里也写过margin塌陷，如果和本文有冲突，以本文为准</strong> ]</li>
+</ul>
+</li>
+<li><p>内联格式化上下文( IFC )</p>
+<ul>
+<li><p>行框：包含了构成一个文本行的所有内联/内联级/原子内联级盒子的矩形区域 ( The rectangular area that contains the boxes that form a line is called a line box )。行框的宽度是由包含块宽度和周围是否存在浮动元素决定的。</p>
+</li>
+<li><p>当行框中内联/内联级/原子内联级盒子A高度小于行框高度时，盒子A的对齐方式是由vertical-align属性决定的。</p>
+</li>
+<li><p>当一个行框无法容纳下多个内联/内联级/原子内联级盒子时，他们会被放在多个行框中，多个行框中内有分隔、没有重叠</p>
+</li>
+<li><p>当一个内联/内联级/原子内联级盒子 B 宽度超出了行框宽度时，盒子B会被拆成多个盒子，如果盒子B不能拆分(B中只有单个字符、word break 的特殊属性等)，会发生内容溢出。盒子B被拆分后，margin、border、padding不会有视觉变化</p>
+<p><img src="/2018-03-15-CSS-spec-visual-formatting-model/img-3.png" width="400px">     图片来自<a href="https://www.w3.org/TR/CSS2/visuren.html#block-boxes" target="_blank" rel="noopener">CSS-spec</a> ，侵删 </p>
+<p>​</p>
+</li>
+</ul>
+</li>
+</ul>
 
                     </div>
                 </div>
@@ -287,13 +293,9 @@
                 </div>
                 <ul class="pager">
 
-    <li class="previous">
-        <a href="/2018-03-15-CSS-spec-visual-formatting-model/" title="CSS-spec-visual-formatting-model" class="tooltipped tooltipped-n" aria-label="CSS-spec-visual-formatting-model"><i class="fa fa-chevron-left"></i> 上一篇文章</a>
-    </li>
-    
     
     <li class="next">
-        <a href="/2018-03-05-css权威指南-视觉格式化/" title="css权威指南-视觉格式化" class="tooltipped tooltipped-n" aria-label="css权威指南-视觉格式化">下一篇文章 <i class="fa fa-chevron-right"></i></a>
+        <a href="/2018-03-08-css权威指南-浮动和定位/" title="css权威指南-浮动和定位" class="tooltipped tooltipped-n" aria-label="css权威指南-浮动和定位">下一篇文章 <i class="fa fa-chevron-right"></i></a>
     </li>
     
 </ul>
