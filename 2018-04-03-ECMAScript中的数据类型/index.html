@@ -13,7 +13,7 @@
     
     <title>
     
-        css权威指南-视觉格式化 - 
+        ECMAScript中的数据类型 - 
     
     Spades
     </title>
@@ -168,18 +168,18 @@
                 </a>
                 <span class="breadcrumb-arrow fa fa-angle-right"></span>
                  
-<a href="/categories/CSS/" title="CSS" rel="category tag">CSS</a>
+<a href="/categories/JavaScript/" title="JavaScript" rel="category tag">JavaScript</a>
 
                     <span class="breadcrumb-arrow fa fa-angle-right"></span>
-                    css权威指南-视觉格式化
+                    ECMAScript中的数据类型
             </div>
             
             <div class="single-post">
               
                 <div class="post-header">
                     <h2 class="post-title">
-                        <a href="/2018-03-05-css权威指南-视觉格式化/" title="css权威指南-视觉格式化">
-                            css权威指南-视觉格式化
+                        <a href="/2018-04-03-ECMAScript中的数据类型/" title="ECMAScript中的数据类型">
+                            ECMAScript中的数据类型
                         </a>
                     </h2>
                 </div>
@@ -187,7 +187,7 @@
                  <div class="post-meta">
                     <ul class="inline-ul">
                         <li class="inline-li">
-                            2018-03-05
+                            2018-04-03
                         </li>
                         
                         <li class="inline-li">
@@ -195,7 +195,7 @@
                         </li>
                         <li class="inline-li">
                              
-<a href="/categories/CSS/" title="CSS" rel="category tag">CSS</a>
+<a href="/categories/JavaScript/" title="JavaScript" rel="category tag">JavaScript</a>
 
                         </li>
                         
@@ -212,53 +212,51 @@
                 <div class="post-body clearfix">
                     <div class="post-content">
                         
-                                <p>在《CSS权威指南》前七个章节里，视觉格式化是最有意思的一个章节，也是值得反复阅读的章节。</p>
-<img src="/2018-03-05-css权威指南-视觉格式化/img-1.png">
-<p>章节大的骨架如上。从格式化的对象上可以分为两个大类，块级元素和行内元素。块级元素有两方面的格式化，一个是水平格式化，另一个，垂直格式化。行内元素需要进行行内格式化，行内格式化同样可以根据格式化对象的不同分为行内替换元素格式化、行内非替换元素格式化。</p>
-<p>对于一部分前端从业者，更熟悉的应该是块级元素视觉格式化，相较于行内元素视觉格式化，块级元素视觉格式化更加简单。</p>
-<h2 id="块级元素"><a href="#块级元素" class="headerlink" title="块级元素"></a>块级元素</h2><p><strong>1. 水平格式化</strong></p>
-<p>在块级元素水平格式化并且<strong>仅在水平格式化</strong>里有一个公式，掌握了这个公式基本可以解决80%的问题：</p>
-<p><code>margin-left + border-left + padding-left + width + padding-right + border-right + margin-right = width of ParaentElement</code></p>
+                                <p>ECMAScript里一共是由以下几种类型的：Undefined、Null、Boolean、String、Number、Object、Symbol，其中<strong>Symbol是ES6中新加入的类型。我们暂时先把Symbol放在一边，只讨论其他六种类型，亦即ES5中的六种数据类型</strong>。</p>
+<h2 id="Part-1—-简单数据类型，复杂数据类型"><a href="#Part-1—-简单数据类型，复杂数据类型" class="headerlink" title="Part 1— {简单数据类型，复杂数据类型}"></a>Part 1— {简单数据类型，复杂数据类型}</h2><p><img src="/2018-04-03-ECMAScript中的数据类型/img-1.png"><br><strong>上图来自ECMAScript Specification 5th Edition</strong></p>
+<p>从规范里，我们可以看到在ES5中有且只有六种数据类型，只要是ES5中的数据，不管有多么清奇的叫法，追根溯源，必然是这六种数据类型中的一种。</p>
+<p>我们可以将ES5中的六种数据类型做个简单的分类， <strong>【简单数据类型</strong>，<strong>复杂数据类型</strong>】 。这种分类方法是Zakas在红宝书里提到的。简单数据类型包括：<strong>Undefined，Null，Boolean，String，Number </strong>，复杂数据类型相对比较孤单，只有<strong>Object</strong>一种。之所以 <strong>Undefined，Null，Boolean，String，Number</strong> 会被划入简单数据类型，是因为这五种类型的可取值有限：</p>
 <ul>
-<li><p>使用auto</p>
-<p>在<code>width</code>  <code>padding</code>  <code>border</code>  <code>margin</code>  这四个属性里，能够将值设置为auto的只有 <code>width</code>  <code>margin-left</code>  <code>margin-right</code> </p>
-<p><strong>如果三个值同时指定</strong>， 在  <strong>ltr</strong>  语言中，用户代理会强制将<code>margin-right</code>置为auto</p>
-<p><strong>只有一个值为auto</strong>时，被设置为auto的属性将会自行确定所需的长度 ( 根据公式 ) </p>
-<p><strong>有两个值为auto</strong>时，如果是<code>margin-left</code> 和 <code>margin-right</code> 被设置为auto，该元素将会水平居中；如果是两个auto中包含<code>width</code>，被设置为auto的margin值将会等于0</p>
-<p><strong>有三个值为auto</strong>时，此时<code>margin-left</code> 、<code>margin-right</code> 都会等于0</p>
-<p>总结：<code>margin-left</code>  <code>margin-right</code>  <code>width</code> 三个属性的优先级：<code>width</code> &gt; (<code>margin-left</code> = <code>margin-right</code>)，优先级高的属性将会抢先占据父元素width中尚未被占用的宽度 </p>
+<li>Undefined类型只有一个值：undefined</li>
+<li>Null类型只有一个值：null</li>
+<li>Boolean类型有两个值：true、false</li>
+<li>String类型的值：字符串</li>
+<li>Number类型的值：数字</li>
+</ul>
+<p>比之于上面五种类型，Object取值就很复杂了，Object本质上是由一组无序的键值对组成的。</p>
+<p>那我们如何去检测一个数据是什么类型的呢？ES中有一个<strong>typeof</strong>运算符可以用来检测数据类型，使用typeof运算符的确可以检测大部分数据类型，但是需要注意：</p>
+<ul>
+<li>typeof  null  返回的是object</li>
+<li>typeof function 返回的是function，而不是object</li>
+</ul>
+<p>那为什么typeof null 返回值是object呢？我们先来看一下MDN上的解释：<u><em>在 JavaScript 最初的实现中，JavaScript 中的值是由一个表示类型的标签和实际数据值表示的。对象的类型标签是 0。由于 null 代表的是空指针（大多数平台下值为 0x00），因此，null的类型标签也成为了 0，typeof null就错误的返回了”object”</em></u> 。现在大家普遍认同，typeof null 返回object 是一个历史错误，为了保持兼容性而维持到现在，ECMAScript提出过一个修复，但是被残忍拒绝了。</p>
+<p>那为什么typeof function 不返回object呢？这里我们还是来看一下贺老的回答，<a href="https://www.zhihu.com/question/24804474" target="_blank" rel="noopener">js里function也算一种基本类型？</a> <u>看完回答是不是又要惊叹贺老的深厚技术底蕴了？</u>总结下贺老的回答，核心就是<strong>在spec里，typeof只是一个运算符，其返回值并不能作为JS类型依据</strong></p>
+<h2 id="Part-2—-基本数据类型，引用数据类型"><a href="#Part-2—-基本数据类型，引用数据类型" class="headerlink" title="Part 2— {基本数据类型，引用数据类型}"></a>Part 2— {基本数据类型，引用数据类型}</h2><p>{基本数据类型，引用数据类型}和{简单数据类型，复杂数据类型}之间有什么异同呢？它们只是按照不同标准对ES5中6种数据类型的不同分类罢了，没有实质上的区别。<u>{基本数据类型，引用数据类型}是根据值访问、引用访问来对数据类型进行的分类，{简单数据类型，复杂数据类型}的分类标准更加随意，由数据类型取值复杂程度进行分类</u>。</p>
+<p>基本数据类型和引用数据类型又具体包含哪些呢？</p>
+<ul>
+<li><p>基本数据类型：Undefined、Null、Boolean、Number、String</p>
 </li>
-<li><p>负边距</p>
-<p>一般的问题可以通过公式来解决</p>
-</li>
-<li><p>百分数</p>
-<p><code>width</code>  <code>margin</code>  <code>padding</code>  的百分数值均以父元素宽度作为参考</p>
+<li><p>引用数据类型：除了上面的5中基本类型，剩下的就是引用类型。<strong>统称为Object类型，细分的话有：Object类型、Array类型、Date类型、RegExp类型、Function类型等</strong>，这个说法是我从<a href="https://segmentfault.com/a/1190000006752076" target="_blank" rel="noopener">JavaScript 深入了解基本类型和引用类型的值</a>借鉴来的，目前为止我没有在相对权威的资料中看到过。这个说法我个人认为是正确的，Object.prototype.toString.call()可以佐证。</p>
+<p><img src="/2018-04-03-ECMAScript中的数据类型/img-2.png"></p>
 </li>
 </ul>
-<p><strong>2. 垂直格式化</strong></p>
-<p>块级元素垂直格式化是<strong>不存在七个属性相加等于父元素宽度的公式的！！</strong></p>
-<ul>
-<li><p>使用auto</p>
-<p>如果块级正常流元素高度设置为auto，并且只有块级子元素，其默认高度是<strong>从最高块级子元素的外边框边界到最低块级子元素的外边框边界</strong>。<strong>当块级元素有内边距或者是边框时，其高度将会从最高子元素上外边距边界到最低子元素下外边距边界</strong>。</p>
-</li>
-<li><p>外边距合并</p>
-<p>在外边距合并上，最合理的解释应该是：<strong>同一个BFC中的相邻外边距会发生合并</strong></p>
-</li>
-</ul>
-<h2 id="行内元素"><a href="#行内元素" class="headerlink" title="行内元素"></a>行内元素</h2><p>{  <code>行框</code>  {  <code>行内框</code>   {  <code>内容区</code>  }  } }</p>
-<p><strong>行框</strong>： 包含该行中出现的行内框的最高点和最低点的最小框。 </p>
-<p><strong>行内框</strong>：对于非替换元素，元素行内框高度等于line-height；对于替换元素，元素框高度等于内容区高度。非替换元素的外边距不会对行内框的高度产社任何影响，会影响到行内框的宽度。</p>
-<p><strong>内容区</strong>：对于非替换元素，内容区是各个字符的em框串在一起的框；对于替换元素，内容区是元素固有高度+可能有的内外边距和边框。</p>
-<p>总结：每一个行框内会包含若干行内框</p>
-<p><strong>1. 行内非替换元素</strong></p>
-<p>非替换元素的内容区高度由font-size值确定，行内框高度由line-height值确定。当line-height值小于font-size时，行间距会取得负值。行间距 = line-height - font-size。当行间距为负值时，元素行内框的顶端在内容区内部。</p>
-<p><strong>2. 行内替换元素</strong><br>对于行内替换元素，内边距会在<strong>具体内容外插入空间</strong>。给替换元素设置负外边距会减少替换元素行内框的大小。</p>
-<p>默认情况下，行内替换元素位于基线上。</p>
-<p><strong>3. line-height</strong></p>
-<p>这里单独把line-height拿出来作为一个点。</p>
-<ul>
-<li>由于line-height会被子元素继承，在给line-height赋值时最好将其设置为原始数字值，将其设为缩放因子。其具体的line-height计算值 = 元素font-size * line-height缩放因子 </li>
-<li>另一个需要关注的点：如果给vertical-align设置百分数值，其计算值 = line-height计算值 * 百分数值</li>
+<p><strong>在ES中，变量是没有类型的，只有值才有类型。对变量执行typeof操作，得到的并不是变量的类型，而是变量持有的值的类型。ES中变量可能持有两种类型的值：基本类型的值和引用类型的值。基本类型的值是按值访问的，引用类型的值是按引用访问的。</strong></p>
+<p>👆上面的这段话说的其实相当拗口，看完大多数人也就是云里雾里。还是看看在ES中存储机制。</p>
+<h2 id="Part3—-ES中的存储机制"><a href="#Part3—-ES中的存储机制" class="headerlink" title="Part3—{ES中的存储机制}"></a>Part3—{ES中的存储机制}</h2><p><strong>1.  堆与栈</strong></p>
+<p>内存空间可以分为栈空间和堆空间。<br>栈空间：由操作系统自动分配释放，存放函数参数值、局部变量的值等。其操作方式类似于数据结构中的栈。<br>堆空间：一般由程序员分配释放，需要考虑垃圾回收问题。</p>
+<p><strong>2. 引用类型和基本类型的存储</strong></p>
+<p>基本类型：在内存中占据固定大小，基本类型的值保存在栈空间中，按值访问。<br>引用类型：引用类型值大小不固定，需要动态为其分配内存空间，所以引用类型的值是存储在堆内存中的。其地址是固定大小的，可以将其地址保存在栈空间中。</p>
+<p><img src="/2018-04-03-ECMAScript中的数据类型/img-3.png">   图片来自<a href="https://segmentfault.com/a/1190000006104910" target="_blank" rel="noopener">【前端进阶之路】内存基本知识</a>，侵删</p>
+<p><strong>3.  访问引用类型变量</strong></p>
+<p>访问引用类型变量时，先从栈空间中读取地址，再根据地址找到堆空间中保存的具体的值。这是一个透明的过程。</p>
+<p><strong>4.  参数传递：值传递？引用传递？</strong></p>
+<p>ES中所有的传递都是值传递。对于保存基本类型值的变量来说是没有任何异议的。<strong>对于保存引用类型的值的变量来说，实质上保存的是引用类型值的地址，它们之间也采用值传递，传递的内容即引用类型值的地址。</strong></p>
+<p><strong>5.  变量复制</strong></p>
+<p>基本类型：会复制变量值，复制前后两个变量独立。<br>引用类型：也会复制<strong><em>变量值</em></strong>，这个地方的变量值是指变量中实际存储的引用类型值的地址。复制前后两个变量将保存指向同一内存空间的地址，使用任一变量修改该地址指向的内容，将会同时影响通过两个变量访问到的引用类型实际值。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>【文章】<a href="https://segmentfault.com/a/1190000006752076" target="_blank" rel="noopener">JavaScript 深入了解基本类型和引用类型的值</a></li>
+<li>【知乎】<a href="https://www.zhihu.com/question/24804474" target="_blank" rel="noopener">js里function也算一种基本类型？</a></li>
+<li>【文章】<a href="https://segmentfault.com/a/1190000006104910" target="_blank" rel="noopener">前端进阶之路-内存基本知识</a></li>
 </ul>
 
                     </div>
@@ -267,21 +265,17 @@
                 <div class="post-tags">
                     
                         
-                            <a href="/tags/阅读整理/" title="阅读整理" rel="tag" class="fa fa-tag">
-                                阅读整理
+                            <a href="/tags/个人总结/" title="个人总结" rel="tag" class="fa fa-tag">
+                                个人总结
                             </a>
                             
                                 
                 </div>
                 <ul class="pager">
 
-    <li class="previous">
-        <a href="/2018-03-08-css权威指南-浮动和定位/" title="css权威指南-浮动和定位" class="tooltipped tooltipped-n" aria-label="css权威指南-浮动和定位"><i class="fa fa-chevron-left"></i> 上一篇文章</a>
-    </li>
-    
     
     <li class="next">
-        <a href="/2018-01-08-The-Stacking-Context/" title="The-Stacking-Context" class="tooltipped tooltipped-n" aria-label="The-Stacking-Context">下一篇文章 <i class="fa fa-chevron-right"></i></a>
+        <a href="/2018-03-27-回调的三生三世/" title="回调的三生三世" class="tooltipped tooltipped-n" aria-label="回调的三生三世">下一篇文章 <i class="fa fa-chevron-right"></i></a>
     </li>
     
 </ul>
