@@ -13,8 +13,6 @@
     
     <title>
     
-        ECMAScript中的数据类型 - 
-    
     Spades
     </title>
     
@@ -168,18 +166,18 @@
                 </a>
                 <span class="breadcrumb-arrow fa fa-angle-right"></span>
                  
-<a href="/categories/JavaScript/" title="JavaScript" rel="category tag">JavaScript</a>
+未分类
 
                     <span class="breadcrumb-arrow fa fa-angle-right"></span>
-                    ECMAScript中的数据类型
+                    
             </div>
             
             <div class="single-post">
               
                 <div class="post-header">
                     <h2 class="post-title">
-                        <a href="/2018-04-03-ECMAScript中的数据类型/" title="ECMAScript中的数据类型">
-                            ECMAScript中的数据类型
+                        <a href="/2018-04-17-2048/" title="">
+                            
                         </a>
                     </h2>
                 </div>
@@ -187,16 +185,7 @@
                  <div class="post-meta">
                     <ul class="inline-ul">
                         <li class="inline-li">
-                            2018-04-03
-                        </li>
-                        
-                        <li class="inline-li">
-                            <span class="post-span">·</span>
-                        </li>
-                        <li class="inline-li">
-                             
-<a href="/categories/JavaScript/" title="JavaScript" rel="category tag">JavaScript</a>
-
+                            2018-04-17
                         </li>
                         
                         
@@ -212,74 +201,35 @@
                 <div class="post-body clearfix">
                     <div class="post-content">
                         
-                                <p>ECMAScript里一共是由以下几种类型的：Undefined、Null、Boolean、String、Number、Object、Symbol，其中<strong>Symbol是ES6中新加入的类型。我们暂时先把Symbol放在一边，只讨论其他六种类型，亦即ES5中的六种数据类型</strong>。</p>
-<h2 id="Part-1—-简单数据类型，复杂数据类型"><a href="#Part-1—-简单数据类型，复杂数据类型" class="headerlink" title="Part 1— {简单数据类型，复杂数据类型}"></a>Part 1— {简单数据类型，复杂数据类型}</h2><p><img src="/2018-04-03-ECMAScript中的数据类型/img-1.png"><br><strong>上图来自ECMAScript Specification 5th Edition</strong></p>
-<p>从规范里，我们可以看到在ES5中有且只有六种数据类型，只要是ES5中的数据，不管有多么清奇的叫法，追根溯源，必然是这六种数据类型中的一种。</p>
-<p>我们可以将ES5中的六种数据类型做个简单的分类， <strong>【简单数据类型</strong>，<strong>复杂数据类型</strong>】 。这种分类方法是Zakas在红宝书里提到的。简单数据类型包括：<strong>Undefined，Null，Boolean，String，Number </strong>，复杂数据类型相对比较孤单，只有<strong>Object</strong>一种。之所以 <strong>Undefined，Null，Boolean，String，Number</strong> 会被划入简单数据类型，是因为这五种类型的可取值有限：</p>
-<ul>
-<li>Undefined类型只有一个值：undefined</li>
-<li>Null类型只有一个值：null</li>
-<li>Boolean类型有两个值：true、false</li>
-<li>String类型的值：字符串</li>
-<li>Number类型的值：数字</li>
-</ul>
-<p>比之于上面五种类型，Object取值就很复杂了，Object本质上是由一组无序的键值对组成的。</p>
-<p>那我们如何去检测一个数据是什么类型的呢？ES中有一个<strong>typeof</strong>运算符可以用来检测数据类型，使用typeof运算符的确可以检测大部分数据类型，但是需要注意：</p>
-<ul>
-<li>typeof  null  返回的是object</li>
-<li>typeof function 返回的是function，而不是object</li>
-</ul>
-<p>那为什么typeof null 返回值是object呢？我们先来看一下MDN上的解释：<u><em>在 JavaScript 最初的实现中，JavaScript 中的值是由一个表示类型的标签和实际数据值表示的。对象的类型标签是 0。由于 null 代表的是空指针（大多数平台下值为 0x00），因此，null的类型标签也成为了 0，typeof null就错误的返回了”object”</em></u> 。现在大家普遍认同，typeof null 返回object 是一个历史错误，为了保持兼容性而维持到现在，ECMAScript提出过一个修复，但是被残忍拒绝了。</p>
-<p>那为什么typeof function 不返回object呢？这里我们还是来看一下贺老的回答，<a href="https://www.zhihu.com/question/24804474" target="_blank" rel="noopener">js里function也算一种基本类型？</a> <u>看完回答是不是又要惊叹贺老的深厚技术底蕴了？</u>总结下贺老的回答，核心就是<strong>在spec里，typeof只是一个运算符，其返回值并不能作为JS类型依据</strong></p>
-<h2 id="Part-2—-基本数据类型，引用数据类型"><a href="#Part-2—-基本数据类型，引用数据类型" class="headerlink" title="Part 2— {基本数据类型，引用数据类型}"></a>Part 2— {基本数据类型，引用数据类型}</h2><p>{基本数据类型，引用数据类型}和{简单数据类型，复杂数据类型}之间有什么异同呢？它们只是按照不同标准对ES5中6种数据类型的不同分类罢了，没有实质上的区别。<u>{基本数据类型，引用数据类型}是根据值访问、引用访问来对数据类型进行的分类，{简单数据类型，复杂数据类型}的分类标准更加随意，由数据类型取值复杂程度进行分类</u>。</p>
-<p>基本数据类型和引用数据类型又具体包含哪些呢？</p>
-<ul>
-<li><p>基本数据类型：Undefined、Null、Boolean、Number、String</p>
-</li>
-<li><p>引用数据类型：除了上面的5中基本类型，剩下的就是引用类型。<strong>统称为Object类型，细分的话有：Object类型、Array类型、Date类型、RegExp类型、Function类型等</strong>，这个说法是我从<a href="https://segmentfault.com/a/1190000006752076" target="_blank" rel="noopener">JavaScript 深入了解基本类型和引用类型的值</a>借鉴来的，目前为止我没有在相对权威的资料中看到过。这个说法我个人认为是正确的，Object.prototype.toString.call()可以佐证。</p>
-<p><img src="/2018-04-03-ECMAScript中的数据类型/img-2.png"></p>
-</li>
-</ul>
-<p><strong>在ES中，变量是没有类型的，只有值才有类型。对变量执行typeof操作，得到的并不是变量的类型，而是变量持有的值的类型。ES中变量可能持有两种类型的值：基本类型的值和引用类型的值。基本类型的值是按值访问的，引用类型的值是按引用访问的。</strong></p>
-<p>👆上面的这段话说的其实相当拗口，看完大多数人也就是云里雾里。还是看看在ES中存储机制。</p>
-<h2 id="Part3—-ES中的存储机制"><a href="#Part3—-ES中的存储机制" class="headerlink" title="Part3—{ES中的存储机制}"></a>Part3—{ES中的存储机制}</h2><p><strong>1.  堆与栈</strong></p>
-<p>内存空间可以分为栈空间和堆空间。<br>栈空间：由操作系统自动分配释放，存放函数参数值、局部变量的值等。其操作方式类似于数据结构中的栈。<br>堆空间：一般由程序员分配释放，需要考虑垃圾回收问题。</p>
-<p><strong>2. 引用类型和基本类型的存储</strong></p>
-<p>基本类型：在内存中占据固定大小，基本类型的值保存在栈空间中，按值访问。<br>引用类型：引用类型值大小不固定，需要动态为其分配内存空间，所以引用类型的值是存储在堆内存中的。其地址是固定大小的，可以将其地址保存在栈空间中。</p>
-<p><img src="/2018-04-03-ECMAScript中的数据类型/img-3.png">   图片来自<a href="https://segmentfault.com/a/1190000006104910" target="_blank" rel="noopener">【前端进阶之路】内存基本知识</a>，侵删</p>
-<p><strong>3.  访问引用类型变量</strong></p>
-<p>访问引用类型变量时，先从栈空间中读取地址，再根据地址找到堆空间中保存的具体的值。这是一个透明的过程。</p>
-<p><strong>4.  参数传递：值传递？引用传递？</strong></p>
-<p>ES中所有的传递都是值传递。对于保存基本类型值的变量来说是没有任何异议的。<strong>对于保存引用类型的值的变量来说，实质上保存的是引用类型值的地址，它们之间也采用值传递，传递的内容即引用类型值的地址。</strong></p>
-<p><strong>5.  变量复制</strong></p>
-<p>基本类型：会复制变量值，复制前后两个变量独立。<br>引用类型：也会复制<strong><em>变量值</em></strong>，这个地方的变量值是指变量中实际存储的引用类型值的地址。复制前后两个变量将保存指向同一内存空间的地址，使用任一变量修改该地址指向的内容，将会同时影响通过两个变量访问到的引用类型实际值。</p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
-<li>【文章】<a href="https://segmentfault.com/a/1190000006752076" target="_blank" rel="noopener">JavaScript 深入了解基本类型和引用类型的值</a></li>
-<li>【知乎】<a href="https://www.zhihu.com/question/24804474" target="_blank" rel="noopener">js里function也算一种基本类型？</a></li>
-<li>【文章】<a href="https://segmentfault.com/a/1190000006104910" target="_blank" rel="noopener">前端进阶之路-内存基本知识</a></li>
-</ul>
-
+                                <!-- Created by Spades<spades@gmail.com> on 18/04/16-->
+<p>&lt;!doctype html&gt;</p>
+<html lang="en"><br><head><br><br>    <meta charset="UTF-8"><br>    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"><br>    <title>2048</title><br>    <style><br>    /<em><br>    ** Created by Spades<a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#58;&#115;&#x70;&#97;&#x64;&#x65;&#x73;&#103;&#101;&#64;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#x63;&#111;&#109;">&#115;&#x70;&#97;&#x64;&#x65;&#x73;&#103;&#101;&#64;&#x67;&#109;&#97;&#x69;&#108;&#x2e;&#x63;&#111;&#109;</a> on 18/04/16
+    </em>/<br>    body {<br>        margin: 0;<br>    }<br><br>    main {<br>        position: absolute;<br>        top: 0;<br>        right: 0;<br>        bottom: 0;<br>        left: 0;<br>        margin: auto;<br>        width: 600px;<br>        height: 600px;<br>    }<br><br>    .header {<br>        line-height: 50px;<br>        text-align: center;<br>    }<br><br>    #restart {<br>        margin-left: 30px;<br>    }<br><br>    .container {<br>        display: flex;<br>        flex-direction: column;<br>        justify-content: space-around;<br>        border-radius: 8px;<br>        margin-top: 50px;<br>        margin-left: 100px;<br>        width: 400px;<br>        height: 400px;<br>        border: 10px solid #bbada0;<br>        background: #bbada0;<br>    }<br><br>    .row {<br>        display: flex;<br>        justify-content: space-around;<br>        margin-bottom: 10px;<br>        flex: 1 1;<br>    }<br><br>    .row:last-child {<br>        margin-bottom: 0;<br>    }<br><br>    .cell {<br>        flex: 1 1;<br>        margin-left: 10px;<br>        font-size: 30px;<br>        font-weight: 700;<br>        line-height: 92px;<br>        text-align: center;<br>        background: #cdc0b4;<br>        color: #776d65;<br>        user-select: none;<br>    }<br><br>    .cell:first-child {<br>        margin-left: 0;<br>    }<br><br>    .cell.lv2 {<br>        background: #eee4da;<br>    }<br><br>    .cell.lv4 {<br>        background: #ede0c9;<br>    }<br><br>    .cell.lv8 {<br>        background: #f3b178;<br>        color: #fff;<br>    }<br><br>    .cell.lv16 {<br>        background: #f67b5f;<br>        color: #fff;<br><br>    }<br><br>    .cell.lv32 {<br>        background: #f67b5f;<br>        color: #fff;<br><br>    }<br><br>    .cell.lv64 {<br>        background: #f65e3a;<br>        color: #fff;<br><br>    }<br><br>    .cell.lv128 {<br>        background: #edcf71;<br>        color: #fff;<br><br>    }<br><br>    .cell.lv256 {<br>        background: #edcc61;<br>        color: #fff;<br><br>    }<br><br>    .cell.lv512 {<br>        background: #e5c02a;<br>        color: #fff;<br><br>    }<br><br>    .cell.lv1024 {<br>        background: #edc53f;<br>        color: #fff;<br><br>    }<br><br>    .cell.lv2048 {<br>        background: #edc32e;<br>        color: #fff;<br><br>    }<br><br>    .footer {<br>        margin-top: 30px;<br>        text-align: center;<br>    }<br>    </style><br></head><br><body><br><main><br>    <div class="header"><br>        <span>score: <span id="score">0</span></span> <button id="restart">重新开始</button><br>    </div><br>    <div class="container"><br>        <div class="row"><br>            <div class="cell"></div><br>            <div class="cell"></div><br>            <div class="cell"></div><br>            <div class="cell"></div><br>        </div><br>        <div class="row"><br>            <div class="cell"></div><br>            <div class="cell"></div><br>            <div class="cell"></div><br>            <div class="cell"></div><br>        </div><br>        <div class="row"><br>            <div class="cell"></div><br>            <div class="cell"></div><br>            <div class="cell"></div><br>            <div class="cell"></div><br>        </div><br>        <div class="row"><br>            <div class="cell"></div><br>            <div class="cell"></div><br>            <div class="cell"></div><br>            <div class="cell"></div><br>        </div><br><br>    </div><br>    <div class="footer"><br>       使用 ↑ ↓ ← → 按钮进行游戏<br>    </div><br></main><br><br><script><br><br>// Created by spades<a href="&#x6d;&#97;&#105;&#x6c;&#116;&#x6f;&#x3a;&#x73;&#112;&#97;&#x64;&#x65;&#115;&#103;&#x65;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#99;&#111;&#109;">&#x73;&#112;&#97;&#x64;&#x65;&#115;&#103;&#x65;&#x40;&#103;&#x6d;&#97;&#x69;&#x6c;&#46;&#99;&#111;&#109;</a> on 18/04/16<br><br>let Data = new Array(16)<br>const containerEle = document.getElementsByClassName(‘container’)[0]<br>const scoreEle = document.getElementById(‘score’)<br><br>/<strong><br> <em> 生成随即索引，确定随机出现新数值的位置
+ </em> @returns {<em>}
+    </em>/<br>    function randomIndex() {<br>    let index<br>    do {<br>        index = Math.floor(Math.random() * 16)<br>    } while (Data[index])<br>    return index<br>    }<br><br>/</strong><br> <em> 随机出现数值，2或者4
+ </em> @returns {number}<br>    <em>/<br>    function randomData() {<br>    const dataArr = [2, 4]<br>    return dataArr[Math.floor(Math.random() </em> 2)]<br>    }<br><br>/<strong><br> <em> 重绘格子区域
+    </em>/<br>    function repaint() {<br>    let innerHTML = ‘’<br>    for (let i = 0; i &lt; Data.length; i++) {<br>        if (i % 4 === 0) {<br>            innerHTML += ‘<div class="row">‘<br>        }<br>        if (Data[i]) {<br>            innerHTML += <code>&lt;div class=&quot;cell lv${Data[i]}&quot;&gt;${Data[i]}&lt;/div&gt;</code><br>        } else {<br>            innerHTML += <code>&lt;div class=&quot;cell &quot;&gt;&lt;/div&gt;</code><br>        }<br>        if (i % 4 === 3) {<br>            innerHTML += ‘</div>‘<br>        }<br>    }<br>    containerEle.innerHTML = innerHTML<br>    }<br><br>/</strong><br> <em> 计算得分
+    </em>/<br>    function score() {<br>    const result = Data.reduce((accumulator, currentValue) =&gt; {<br>        return accumulator + currentValue<br>    })<br>    scoreEle.innerText = result<br>    }<br><br>/<strong><br> <em> 游戏初始化
+    </em>/<br>    function init() {<br>    Data = new Array(16)<br>    Data[randomIndex()] = randomData()<br>    Data[randomIndex()] = randomData()<br>    scoreEle.innerText = 0<br>    repaint()<br>    }<br><br>/</strong><br> <em> 将16个格子中数据按行或者列分类
+ </em> @param isRow<br> <em> @returns {[null,null,null,null]}
+    </em>/<br>    function getRowsOrColumns(isRow = true) {<br>    const classifyArr = [new Array(0), new Array(0), new Array(0), new Array(0)]<br>    Data.filter((item, index) =&gt; {<br>        let condition = index % 4<br>        if (isRow) {<br>            condition = Math.floor(index / 4)<br>        }<br>        switch (condition) {<br>            case 0:<br>                classifyArr[0].push(item)<br>                break<br>            case 1:<br>                classifyArr[1].push(item)<br>                break<br>            case 2:<br>                classifyArr[2].push(item)<br>                break<br>            case 3:<br>                classifyArr[3].push(item)<br>                break<br>            default:<br>                break<br>        }<br>    })<br>    return classifyArr<br>    }<br><br>/<strong><br> <em> 失败判断
+    </em>/<br>    function isFailing() {<br>    const flag = (Data.filter(item =&gt; item).length &lt; 16)<br>    if (flag) {<br>        return<br>    }<br>    const columns = getRowsOrColumns(false)<br>    const rows = getRowsOrColumns()<br>    for (let i = 0; i &lt; 4; i++) {<br>        for (let j = 0; j &lt; columns[i].length - 1; j++) {<br>            if (columns[i][j] === columns[i][j + 1] &amp;&amp; columns[i][j]) {<br>                return<br>            }<br>        }<br>        for (let k = 0; k &lt; rows[i].length - 1; k++) {<br>            if (rows[i][k] === rows[i][k + 1] &amp;&amp; rows[i][k]) {<br>                return<br>            }<br>        }<br>    }<br>    alert(‘挑战失败!’)<br>    init()<br>    }<br><br>/</strong><br> <em> 新生成一个格子
+    </em>/<br>    function addOne() {<br>    Data[randomIndex()] = randomData()<br>    score()<br>    }<br><br><br>init()<br><br>/<em>*
+ </em> 执行移动操作<br> <em> @param isHorizontal  是否为水平移动
+ </em> @param hasToReverse  在数据重排序过程中是否要反转，默认向上、向左为顺序不用反转；向下、向右需要反转<br>    <em>/<br>    function move(isHorizontal = true, hasToReverse = false) {<br>    let toAdd = false<br>    let isSuccessful = false<br>    const DataToString = Data.join()<br>    const items = getRowsOrColumns(isHorizontal)<br>    for (let i = 0; i &lt; 4; i++) {<br>        if (hasToReverse) {<br>            items[i].reverse()<br>        }<br>        for (let j = 0; j &lt; items[i].length - 1; j++) {<br>            if (items[i][j] === items[i][j + 1] &amp;&amp; items[i][j]) {<br>                items[i][j + 1] </em>= 2<br>                items[i].splice(j, 1)<br>                isSuccessful = (items[i][j] === 2048)<br>                toAdd = true<br>            }<br>        }<br>    }<br>    Data = new Array(16)<br>    for (let i = 0; i &lt; 4; i++) {<br>        for (let j = 0; j &lt; items[i].length; j++) {<br>            if (isHorizontal) {<br>                if (hasToReverse) {<br>                    Data[(i <em> 4) + 3 - j] = items[i][j]<br>                } else {<br>                    Data[(i </em> 4) + j] = items[i][j]<br>                }<br>            } else {<br>                if (hasToReverse) {<br>                    Data[i + (4 <em> (3 - j))] = items[i][j]<br>                } else {<br><br>                    Data[i + (4 </em> j)] = items[i][j]<br>                }<br>            }<br>        }<br>    }<br>    toAdd = (DataToString !== Data.join())<br>    if (toAdd) {<br>        addOne()<br>    } else {<br>        isFailing()<br>    }<br>    repaint()<br>    if (isSuccessful) {<br>        alert(‘恭喜，挑战成功’)<br>        init()<br>    }<br>    }<br><br><br>document.onkeyup = function (e) {<br>    switch (e.keyCode) {<br>        case 37:<br>            move(true, false)<br>            break<br>        case 38:<br>            move(false, false)<br>            break<br>        case 39:<br>            move(true, true)<br>            break<br>        case 40:<br>            move(false, true)<br>            break<br>        default:<br>            break<br>    }<br>}<br><br>document.getElementById(‘restart’).onclick = init<br><br></script><br><br></body><br></html>
                     </div>
                 </div>
                   
                 <div class="post-tags">
                     
-                        
-                            <a href="/tags/个人总结/" title="个人总结" rel="tag" class="fa fa-tag">
-                                个人总结
-                            </a>
-                            
-                                
+                                    未设置标签
+                                        
                 </div>
                 <ul class="pager">
 
-    <li class="previous">
-        <a href="/2018-04-17-2048/" title="" class="tooltipped tooltipped-n" aria-label=""><i class="fa fa-chevron-left"></i> 上一篇文章</a>
-    </li>
-    
     
     <li class="next">
-        <a href="/2018-03-27-回调的三生三世/" title="回调的三生三世" class="tooltipped tooltipped-n" aria-label="回调的三生三世">下一篇文章 <i class="fa fa-chevron-right"></i></a>
+        <a href="/2018-04-03-ECMAScript中的数据类型/" title="ECMAScript中的数据类型" class="tooltipped tooltipped-n" aria-label="ECMAScript中的数据类型">下一篇文章 <i class="fa fa-chevron-right"></i></a>
     </li>
     
 </ul>
