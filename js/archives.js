@@ -6,7 +6,7 @@ $(document).ready(function() {
         $(".month.monthed").click(function() {
             var t = $(this),
                 id = "#" + t.attr("id").replace("mont", "arti");
-            if(!t.hasClass("selected")){
+            if (!t.hasClass("selected")) {
                 // reuse id to store its offset
                 id = $(id).offset().top - 10;
                 $(".month.monthed.selected").removeClass("selected");
@@ -26,18 +26,18 @@ $(document).ready(function() {
         });
         $(window).scroll(function() {
             var scroll_top = $(this).scrollTop();
-            if(scroll_top >= top + 60)
-                $(".archive-nav").css({top: 60});
+            if (scroll_top >= top + 60)
+                $(".archive-nav").css({ top: 60 });
             else
-                $(".archive-nav").css({top: top + 60 - scroll_top});
+                $(".archive-nav").css({ top: top + 60 - scroll_top });
             $(".archive-title").each(function() {
                 var t = $(this),
                     id = t.attr("id"),
                     year = parseInt(id.replace(/arti-(\d*)-\d*/, "$1")),
                     offset = t.offset().top - 40,
                     bottom = offset + t.height();
-                if(offset <= scroll_top && scroll_top < bottom) {
-                    if(year != year_selected) {
+                if (offset <= scroll_top && scroll_top < bottom) {
+                    if (year != year_selected) {
                         $("#year-" + year_selected).removeClass("selected");
                         $("#year-" + year).addClass("selected");
                         year_selected = year;
