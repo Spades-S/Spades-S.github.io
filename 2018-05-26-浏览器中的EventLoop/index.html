@@ -6,6 +6,8 @@
   <title>浏览器中的EventLoop | Spades</title>
   <meta name="author" content="Spades">
   
+  <meta name="description" content="EventLoop是用户代理为协调事件(event)、用户交互(user interaction)、脚本(script)、渲染(rendering)、网络(networking)等而采取的机制。EventLoop是在HTML-SPEC中定义的，而非ECMAScript中定义的，也就是说EventLo">
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -63,13 +65,123 @@
     </header>
     <div class="entry">
       
-        
+        <p><strong>EventLoop是用户代理为协调事件(event)、用户交互(user interaction)、脚本(script)、渲染(rendering)、网络(networking)等而采取的机制</strong>。EventLoop是在<a href="https://html.spec.whatwg.org/#event-loop" target="_blank" rel="noopener">HTML-SPEC</a>中定义的，而非ECMAScript中定义的，也就是说<strong>EventLoop实质上是由用户代理实现的</strong>。</p>
+<h3 id="Specification"><a href="#Specification" class="headerlink" title="Specification"></a>Specification</h3><blockquote>
+<p>我们来看看标准是怎么解释EventLoop的，翻译可能有不对之处，建议直接看 <a href="https://html.spec.whatwg.org/multipage/webappapis.html#generic-task-sources" target="_blank" rel="noopener">Spec</a>。</p>
+</blockquote>
+<ul>
+<li><p>定义</p>
+<p>事件循环(EventLoop)是用户代理为协调事件(event)、用户交互(user interaction)、脚本(script)、渲染(rendering)、网络(networking)等而采取的机制。事件循环可以分为两类，一类是浏览器上下文(browsing context)事件循环，一类是worker事件循环。browsing context EventLoop、worker EventLoop 分别由各自的处理模型来管理EventLoop的生命周期。</p>
+<p><strong>下面所有内容均是关于browsing context EventLoop，worker EventLoop我们暂时忽略它</strong>。</p>
+</li>
+<li><p>Task queue in browsing context EventLoop</p>
+<ul>
+<li><p>一个EventLoop会有一个或者多个<code>task queue</code>。<code>task queue</code> 是一个有序的任务列表(an ordered list of tasks)。这些task是负责实现<code>Event</code>、<code>Parsing</code>、<code>Callbacks</code>、<code>Using a resource</code>、<code>Reacting  to DOM manipulation</code>的算法。</p>
+<p>所有的<code>task</code>都是来自特定的<code>task source</code>，来自相同的<code>task source</code>并且是针对特定的<code>EventLoop</code>的的任务会被添加到相同的<code>task queue</code>，来自不同的<code>task source</code>会被放入不同的<code>task queue</code>。</p>
+</li>
+<li><p><strong>每一个EventLoop有一个Microtask queue</strong></p>
+</li>
+</ul>
+</li>
+<li><p>Task sources in browsing context EventLoop</p>
+<ul>
+<li><p>Generic task sources</p>
+<ul>
+<li>DOM manipulation(DOM 操作)</li>
+<li>User Interaction(用户交互)：所有响应用户输入的event都将会被加入用户交互事件所在队列</li>
+<li>Networking(网络)：触发网络请求的操作</li>
+<li>History traversal(历史记录相关操作)：history.back()及其类似操作 </li>
+</ul>
+</li>
+<li><p>Microtask sources(<strong>V8引擎中</strong> )</p>
+<ul>
+<li>process.nextTick, Promises, Object.observe, MutationObserver</li>
+</ul>
+</li>
+<li><p>关于Macrotask和Microtask</p>
+<ul>
+<li><p>Here “platform code” means engine, environment, and promise implementation code. In practice, this requirement ensures that onFulfilled and onRejected execute asynchronously, after the event loop turn in which then is called, and with a fresh stack. This can be implemented with either a “macro-task” mechanism such as setTimeout or setImmediate, or with a “micro-task” mechanism such as MutationObserver or process.nextTick. Since the promise implementation is considered platform code, it may itself contain a task-scheduling queue or “trampoline” in which the handlers are called.  — <a href="https://promisesaplus.com/" target="_blank" rel="noopener">Promise A+</a></p>
+</li>
+<li><p>V8中Macrotask 和 Microtask包含的任务：</p>
+<p>macrotasks: script(整体代码),setTimeout, setInterval, setImmediate, I/O, UI rendering<br>microtasks: process.nextTick, Promises, Object.observe, MutationObserver</p>
+<p>​</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Processing model in browsing context EventLoop</p>
+<ul>
+<li><p>用户代理从从全部任务队列中挑出一个任务队列，选择其中最老的任务最为<code>EventLoop</code>的<code>oldestTask</code>。如果挑不出任务，将去直接跳转到microtasks 步骤</p>
+</li>
+<li><p>将EventLoop当前执行任务置为<code>oldestTask</code></p>
+</li>
+<li><p>运行<code>oldestTask</code></p>
+</li>
+<li><p>将<code>EventLoop</code>当前执行任务置为null</p>
+</li>
+<li><p>将<code>oldestTask</code>从其<code>task queue</code>中移除</p>
+</li>
+<li><p>执行Microtask任务：进入Microtask检查点</p>
+</li>
+<li><p>更新视图：在更新视图时会判断是否有需要，如果当前视图没有影响将不会更新</p>
+<p>更新视图顺序：</p>
+<ul>
+<li>会resize</li>
+<li>srcoll</li>
+<li>media query  and report changes</li>
+<li>update animations adn send events</li>
+<li>fullscreen</li>
+<li>animation frame callbacks (对应于 requestAnimationFrame)</li>
+<li>更新视图、用户接口、浏览器上下文</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>执行Microtask任务：进行Microtask检查点</p>
+<ul>
+<li>首先将进入Microtask检查点标志置为true</li>
+<li>当EventLoop的Microtask queue不为空时：<ul>
+<li>将队列中最老的Microtask任务置为<code>oldestMicrotask</code></li>
+<li>将EventLoop当前执行任务设置为<code>oldestMicrotask</code></li>
+<li>运行<code>oldestMicrotask</code></li>
+<li>将EventLoop当前执行任务置为null</li>
+<li>从Microtask queue中移除<code>oldestMicrotask</code></li>
+</ul>
+</li>
+<li>通知EventLoop对应的环境设置对象(environment settings object) rejected promise信息</li>
+<li>清空Indexed Database 事务</li>
+<li>将进入Microtask检查点标志置为false</li>
+</ul>
+</li>
+</ul>
+<h3 id="Practice"><a href="#Practice" class="headerlink" title="Practice"></a>Practice</h3><p>这里推荐大家去看session stack上的文章：<a href="https://blog.sessionstack.com/how-javascript-works-event-loop-and-the-rise-of-async-programming-5-ways-to-better-coding-with-2f077c4438b5" target="_blank" rel="noopener">How JavaScript works: Event loop and the rise of Async programming + 5 ways to better coding with async/await</a>，讲的很好。</p>
+<h3 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h3><ul>
+<li><a href="https://segmentfault.com/a/1190000010622146" target="_blank" rel="noopener">什么是浏览器的事件循环（Event Loop）？</a></li>
+<li><a href="https://github.com/aooy/blog/issues/5" target="_blank" rel="noopener">从event loop规范探究javaScript异步及浏览器更新渲染时机</a></li>
+<li><a href="https://www.jianshu.com/p/3ed992529cfc" target="_blank" rel="noopener">[JavaScript] Macrotask Queue和Microtask Queue</a></li>
+<li><a href="https://promisesaplus.com/" target="_blank" rel="noopener">Primise A+</a></li>
+<li><a href="https://html.spec.whatwg.org/multipage/webappapis.html#event-loop" target="_blank" rel="noopener">HTML-SPCE-EventLoop</a></li>
+<li><a href="https://jakearchibald.com/2015/tasks-microtasks-queues-and-schedules/" target="_blank" rel="noopener">Tasks, microtasks, queues and schedules</a></li>
+<li><a href="https://blog.sessionstack.com/how-javascript-works-event-loop-and-the-rise-of-async-programming-5-ways-to-better-coding-with-2f077c4438b5" target="_blank" rel="noopener">How JavaScript works: Event loop and the rise of Async programming + 5 ways to better coding with async/await</a></li>
+</ul>
+
       
     </div>
     <footer>
       
         
+  
+  <div class="categories">
+    <a href="/categories/Browser/">Browser</a>
+  </div>
+
         
+  
+  <div class="tags">
+    <a href="/tags/个人总结/">个人总结</a>
+  </div>
+
         
   <div class="addthis addthis_toolbox addthis_default_style">
     
@@ -1296,6 +1408,8 @@ gitment.render('container')
   <h3 class="title">分类</h3>
   <ul class="entry">
   
+    <li><a href="/categories/Browser/">Browser</a><small>1</small></li>
+  
     <li><a href="/categories/CSS/">CSS</a><small>9</small></li>
   
     <li><a href="/categories/JavaScript/">JavaScript</a><small>5</small></li>
@@ -1317,7 +1431,7 @@ gitment.render('container')
   <h3 class="title">标签</h3>
   <ul class="entry">
   
-    <li><a href="/tags/个人总结/">个人总结</a><small>12</small></li>
+    <li><a href="/tags/个人总结/">个人总结</a><small>13</small></li>
   
     <li><a href="/tags/杂感/">杂感</a><small>1</small></li>
   
