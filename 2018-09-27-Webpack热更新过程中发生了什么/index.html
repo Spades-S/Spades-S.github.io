@@ -1,0 +1,1443 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Webpack热更新过程中发生了什么 | Spades</title>
+  <meta name="author" content="Spades">
+  
+  <meta name="description" content="Webpack HMR 或许是Webpack提供的最有用的功能之一，使用HMR的好处在于，能够在运行时更新各个模块，无需进行完全刷新，避免因完全刷新带来的状态丢失。使用HMR能够极大提升开发人员的开发效率。
+
+那Webpack是用什么机制实现了HMR呢？
+
+在研究原理之前，我们先看一下表象，顺便猜测">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Webpack热更新过程中发生了什么"/>
+  <meta property="og:site_name" content="Spades"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  <link href="/favicon.png" rel="icon">
+  <link rel="alternate" href="/atom.xml" title="Spades" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+</head>
+
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Spades</a></h1>
+  <h2><a href="/">白发渔樵江渚上，惯看秋月春风</a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+      <li><a href="/2017-08-29-readlist">ReadList</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div>
+</header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+      
+      
+  
+    <h1 class="title">Webpack热更新过程中发生了什么</h1>
+  
+
+      
+        <time datetime="2018-09-27T03:14:12.000Z"><a href="/2018-09-27-Webpack热更新过程中发生了什么/">2018-09-27</a></time>
+      
+    </header>
+    <div class="entry">
+      
+        <p>Webpack HMR 或许是Webpack提供的最有用的功能之一，使用HMR的好处在于，能够在运行时更新各个模块，无需进行完全刷新，避免因完全刷新带来的状态丢失。使用HMR能够极大提升开发人员的开发效率。</p>
+<ul>
+<li>那Webpack是用什么机制实现了HMR呢？</li>
+</ul>
+<p>在研究原理之前，我们先看一下表象，顺便猜测一下原理。本文选取使用了HMR的工程<a href="https://github.com/Spades-S/musichub" target="_blank" rel="noopener">MusicHub</a>作为观测工程。</p>
+<p><img src="https://i.loli.net/2018/09/27/5bac50e56a378.png" alt="image musichub"><br>当浏览器在请求页面的时候都请求了哪些内容，我们从dev-tools的network面板中可以看到，浏览器在请求页面的时候请求了html文件，des.js，webpack打包生成的文件，data:font… 字体文件，以及info?t=… 和 websocket，在这5个文件中，需要注意的是后两个，info?t=… 和 websocket，查看这两个请求，</p>
+<p><img src="https://i.loli.net/2018/09/27/5bac5671aef52.png" alt="image info?t="></p>
+<p>info?=… 是一个常规请求，暂时跳过，看看websocket</p>
+<p><img src="https://i.loli.net/2018/09/27/5bac56dca4776.png" alt="image websocket "><br>我们看到，这个请求建立了websocket通信，到这儿我们可以大胆地进行猜测，HMR的实现是基于websocket的。</p>
+<ul>
+<li>通过源码了解HMR实现原理</li>
+</ul>
+<p>在开发环境中，是使用webpack-dev-server提供开发环境下的服务的，我们首先看webpack-dev-server里有什么。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack-dev-server/bin/webpack-dev-server.js</span></span><br><span class="line"><span class="keyword">const</span> Server = <span class="built_in">require</span>(<span class="string">'../lib/Server'</span>);</span><br><span class="line">processOptions(wpOpt);</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">processOptions</span>(<span class="params">webpackOptions</span>) </span>&#123;</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	<span class="keyword">if</span> (options.port != <span class="literal">null</span>) &#123;</span><br><span class="line">    startDevServer(webpackOptions, options);</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  portfinder.basePort = DEFAULT_PORT;</span><br><span class="line">  portfinder.getPort(<span class="function">(<span class="params">err, port</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (err) <span class="keyword">throw</span> err;</span><br><span class="line">    options.port = port;</span><br><span class="line">    startDevServer(webpackOptions, options);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">startDevServer</span>(<span class="params">webpackOptions, options</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">let</span> compiler;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    compiler = webpack(webpackOptions);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  <span class="keyword">let</span> server;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    server = <span class="keyword">new</span> Server(compiler, options);</span><br><span class="line">  &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">    <span class="keyword">const</span> OptionsValidationError = <span class="built_in">require</span>(<span class="string">'../lib/OptionsValidationError'</span>);</span><br><span class="line">    <span class="keyword">if</span> (e <span class="keyword">instanceof</span> OptionsValidationError) &#123;</span><br><span class="line">      <span class="built_in">console</span>.error(colorError(options.stats.colors, e.message));</span><br><span class="line">          process.exit(<span class="number">1</span>); <span class="comment">// eslint-disable-line</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> e;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上就是webpack-dev-server/bin/webpack-dev-server.js文件中的关键部分代码，核心工作是startDevServer，这里面最重要的是 <code>compiler</code> 和 <code>server</code>，compiler是返回的webpack Compiler 实例。我们再来看看<code>server</code>，<code>server</code> 是调用new Server()返回的对象，Server是从webpack-dev-server/lib/Server.js 文件中导出的。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack-dev-server/lib/Server.js </span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">Server</span>(<span class="params">compiler, options</span>) </span>&#123;</span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	compiler.plugin(<span class="string">'compile'</span>, invalidPlugin);</span><br><span class="line">    compiler.plugin(<span class="string">'invalid'</span>, invalidPlugin);</span><br><span class="line">    compiler.plugin(<span class="string">'done'</span>, (stats) =&gt; &#123;</span><br><span class="line">        <span class="keyword">this</span>._sendStats(<span class="keyword">this</span>.sockets, stats.toJson(clientStats));</span><br><span class="line">        <span class="keyword">this</span>._stats = stats;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">const</span> app = <span class="keyword">this</span>.app = <span class="keyword">new</span> express(); <span class="comment">// eslint-disable-line</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">	app.get(<span class="string">'/webpack-dev-server/*'</span>, (req, res) =&gt; &#123;</span><br><span class="line">        res.setHeader(<span class="string">'Content-Type'</span>, <span class="string">'text/html'</span>);</span><br><span class="line">        fs.createReadStream(path.join(__dirname, <span class="string">'..'</span>, <span class="string">'client'</span>, <span class="string">'live.html'</span>)).pipe(res);</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// a series of routers</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// ... </span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Server.prototype._sendStats = <span class="function"><span class="keyword">function</span>(<span class="params">sockets, stats, force</span>) </span>&#123;</span><br><span class="line">	<span class="comment">// ... </span></span><br><span class="line">    <span class="keyword">this</span>.sockWrite(sockets, <span class="string">'hash'</span>, stats.hash);</span><br><span class="line">    <span class="keyword">if</span> (stats.errors.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">		 <span class="keyword">this</span>.sockWrite(sockets, <span class="string">'errors'</span>, stats.errors); </span><br><span class="line">	&#125; <span class="keyword">else</span> <span class="keyword">if</span> (stats.warnings.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">this</span>.sockWrite(sockets, <span class="string">'warnings'</span>, stats.warnings); </span><br><span class="line">	&#125; <span class="keyword">else</span> &#123; </span><br><span class="line">		<span class="keyword">this</span>.sockWrite(sockets, <span class="string">'ok'</span>); </span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = Server;</span><br></pre></td></tr></table></figure>
+<p>webpack-dev-server/lib/Server.js 文件核心就是导出Server函数，在Server函数中我们可以看到 监听了compiler实例的各个生命周期，当编译完成时，调用this._sendStats(…)。在sendStats函数中，通过websocket向浏览器发送了几个消息：分别是 hash消息，内容是编译新生成模块的hash值；ok 消息。我们可以在浏览器上通过dev-tools进行验证。</p>
+<p><img src="https://i.loli.net/2018/09/27/5bac91105d182.png" alt="image websocket-messages"></p>
+<p>上面我们提到了webpack-dev-server通过websocket向服务器发送了<code>hash</code>消息和<code>ok</code>消息，但是，websocket是在什么时候建立的呢？我们需要看一下webpack-dev-server/client/index.js。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack-dev-server/client/index.js</span></span><br><span class="line"><span class="keyword">var</span> socket = <span class="built_in">require</span>(<span class="string">'./socket'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ... </span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> socketUrl = url.format(&#123;</span><br><span class="line">    protocol: protocol,</span><br><span class="line">    auth: urlParts.auth,</span><br><span class="line">    hostname: hostname,</span><br><span class="line">    port: urlParts.port,</span><br><span class="line">    pathname: urlParts.path == <span class="literal">null</span> || urlParts.path === <span class="string">'/'</span> ? <span class="string">'/sockjs-node'</span> : urlParts.path</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">socket(socketUrl, onSocketMsg);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+<p>在 webpack-dev-server/client/index.js 中调用了socket函数，该函数是从 webpack-dev-server/client/socket.js下引入的，我们到webpack-dev-server/client/socket.js下看看：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack-dev-server/client/socket.js</span></span><br><span class="line"><span class="keyword">var</span> SockJS = <span class="built_in">require</span>(<span class="string">'sockjs-client/dist/sockjs'</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> socket = <span class="function"><span class="keyword">function</span> <span class="title">initSocket</span>(<span class="params">url, handlers</span>) </span>&#123;</span><br><span class="line">  sock = <span class="keyword">new</span> SockJS(url);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+<p>我们可以看到是在webpack-dev-server/client/socket.js 中建立了websocket连接。不过上面👆看到的这两个文件都是websocket client， 那websocket server呢？websocket server是在webpack-dev-server/lib/Server.js 中创建的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack-dev-server/lib/Server.js</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">Server.prototype.listen = <span class="function"><span class="keyword">function</span>(<span class="params">port, hostname, fn</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.listenHostname = hostname;</span><br><span class="line">    <span class="comment">// eslint-disable-next-line</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> returnValue = <span class="keyword">this</span>.listeningApp.listen(port, hostname, (err) =&gt; &#123;</span><br><span class="line">        <span class="keyword">const</span> sockServer = sockjs.createServer(&#123;</span><br><span class="line">            <span class="comment">// Use provided up-to-date sockjs-client</span></span><br><span class="line">            sockjs_url: <span class="string">'/__webpack_dev_server__/sockjs.bundle.js'</span>,</span><br><span class="line">            <span class="comment">// Limit useless logs</span></span><br><span class="line">            log(severity, line) &#123;</span><br><span class="line">                <span class="keyword">if</span> (severity === <span class="string">'error'</span>) &#123;</span><br><span class="line">                    log(line);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        sockServer.on(<span class="string">'connection'</span>, (conn) =&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> (!conn) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">if</span> (!<span class="keyword">this</span>.checkHost(conn.headers)) &#123;</span><br><span class="line">                <span class="keyword">this</span>.sockWrite([conn], <span class="string">'error'</span>, <span class="string">'Invalid Host header'</span>);</span><br><span class="line">                conn.close();</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">this</span>.sockets.push(conn);</span><br><span class="line"></span><br><span class="line">            conn.on(<span class="string">'close'</span>, () =&gt; &#123;</span><br><span class="line">                <span class="keyword">const</span> connIndex = <span class="keyword">this</span>.sockets.indexOf(conn);</span><br><span class="line">                <span class="keyword">if</span> (connIndex &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">this</span>.sockets.splice(connIndex, <span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.clientLogLevel) &#123; <span class="keyword">this</span>.sockWrite([conn], <span class="string">'log-level'</span>, <span class="keyword">this</span>.clientLogLevel); &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.progress) &#123; <span class="keyword">this</span>.sockWrite([conn], <span class="string">'progress'</span>, <span class="keyword">this</span>.progress); &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.clientOverlay) &#123; <span class="keyword">this</span>.sockWrite([conn], <span class="string">'overlay'</span>, <span class="keyword">this</span>.clientOverlay); &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.hot) <span class="keyword">this</span>.sockWrite([conn], <span class="string">'hot'</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!<span class="keyword">this</span>._stats) <span class="keyword">return</span>;</span><br><span class="line">            <span class="keyword">this</span>._sendStats([conn], <span class="keyword">this</span>._stats.toJson(clientStats), <span class="literal">true</span>);</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        sockServer.installHandlers(<span class="keyword">this</span>.listeningApp, &#123;</span><br><span class="line">            prefix: <span class="string">'/sockjs-node'</span></span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (fn) &#123;</span><br><span class="line">            fn.call(<span class="keyword">this</span>.listeningApp, err);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> returnValue;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+<p>从上面👆的代码中可以看到，在建立了websocket连接之后，会立即给浏览器端的websocket client发送消息，消息类型可能是<code>log-lverl</code>，<code>progress</code>，<code>overlay</code>，<code>hot</code>，我们通过dev tools来验证下：</p>
+<p><img src="https://i.loli.net/2018/09/27/5bac95db1a7d4.png" alt="image websocket-messages"></p>
+<p>我们成功找到了 <code>log-level</code> 和 <code>hot</code> 消息。</p>
+<p>webpack-dev-server 在compiler编译完成之后会向浏览器发送<code>hash</code> 和 <code>ok</code> 消息，那浏览器在接收到这两个消息之后会执行什么操作呢？我们来看 webpack-dev-server/client/index.js：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack-dev-server/client/index.js</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> onSocketMsg = &#123;</span><br><span class="line">    hot: <span class="function"><span class="keyword">function</span> <span class="title">hot</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        _hot = <span class="literal">true</span>;</span><br><span class="line">        log.info(<span class="string">'[WDS] Hot Module Replacement enabled.'</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    invalid: <span class="function"><span class="keyword">function</span> <span class="title">invalid</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        log.info(<span class="string">'[WDS] App updated. Recompiling...'</span>);</span><br><span class="line">        <span class="comment">// fixes #1042. overlay doesn't clear if errors are fixed but warnings remain.</span></span><br><span class="line">        <span class="keyword">if</span> (useWarningOverlay || useErrorOverlay) overlay.clear();</span><br><span class="line">        sendMsg(<span class="string">'Invalid'</span>);</span><br><span class="line">    &#125;,</span><br><span class="line">    hash: <span class="function"><span class="keyword">function</span> <span class="title">hash</span>(<span class="params">_hash</span>) </span>&#123;</span><br><span class="line">        currentHash = _hash;</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">	ok: <span class="function"><span class="keyword">function</span> <span class="title">ok</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        sendMsg(<span class="string">'Ok'</span>);</span><br><span class="line">        <span class="keyword">if</span> (useWarningOverlay || useErrorOverlay) overlay.clear();</span><br><span class="line">        <span class="keyword">if</span> (initial) <span class="keyword">return</span> initial = <span class="literal">false</span>; <span class="comment">// eslint-disable-line no-return-assign</span></span><br><span class="line">        reloadApp();</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">	<span class="comment">// ...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">socket(socketUrl, onSocketMsg);</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">reloadApp</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (_hot) &#123;</span><br><span class="line">        log.info(<span class="string">'[WDS] App hot update...'</span>);</span><br><span class="line">        <span class="comment">// eslint-disable-next-line global-require</span></span><br><span class="line">        <span class="keyword">var</span> hotEmitter = <span class="built_in">require</span>(<span class="string">'webpack/hot/emitter'</span>);</span><br><span class="line">        hotEmitter.emit(<span class="string">'webpackHotUpdate'</span>, currentHash);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">typeof</span> self !== <span class="string">'undefined'</span> &amp;&amp; self.window) &#123;</span><br><span class="line">            <span class="comment">// broadcast update to window</span></span><br><span class="line">            self.postMessage(<span class="string">'webpackHotUpdate'</span> + currentHash, <span class="string">'*'</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> rootWindow = self;</span><br><span class="line">        <span class="comment">// use parent window for reload (in case we're in an iframe with no valid src)</span></span><br><span class="line">        <span class="keyword">var</span> intervalId = self.setInterval(<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (rootWindow.location.protocol !== <span class="string">'about:'</span>) &#123;</span><br><span class="line">                <span class="comment">// reload immediately if protocol is valid</span></span><br><span class="line">                applyReload(rootWindow, intervalId);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                rootWindow = rootWindow.parent;</span><br><span class="line">                <span class="keyword">if</span> (rootWindow.parent === rootWindow) &#123;</span><br><span class="line">                    <span class="comment">// if parent equals current window we've reached the root which would continue forever, so trigger a reload anyways</span></span><br><span class="line">                    applyReload(rootWindow, intervalId);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">function</span> <span class="title">applyReload</span>(<span class="params">rootWindow, intervalId</span>) </span>&#123;</span><br><span class="line">        clearInterval(intervalId);</span><br><span class="line">        log.info(<span class="string">'[WDS] App updated. Reloading...'</span>);</span><br><span class="line">        rootWindow.location.reload();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>浏览器在接收到 <code>hash</code> 消息后会将hash值放到currentHash中存起来，在接收到 <code>ok</code> 消息之后，会执行 <code>reloadApp</code> 函数。 在 <code>realoadApp</code> 函数中，有一个 <code>if/else</code>，条件是 <code>_hot</code> ,也就是是否支持热重载，如果支持，进入 <code>if</code> 分支， 否则进入 <code>else</code> 分支，先来看一下 <code>else</code> 分支，<code>else</code> 分支中核心就是 <code>applyReload</code> 函数， 而 <code>applyReload</code> 函数的功用就是重载页面。再来看看 <code>if</code> 分支，也就是可以进行热重载，在 <code>if</code> 分支中会通过 <code>hotEmitter</code> 发射一个 <code>webpackHotUpdate</code> 事件，内容是收到 <code>hash</code> 消息时保存的hash值。</p>
+<p>先来看一下 hotEmitter，它是从 webpack/hot/emitter.js 中导出的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack/hot/emitter.js</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> EventEmitter = <span class="built_in">require</span>(<span class="string">"events"</span>);</span><br><span class="line"><span class="built_in">module</span>.exports = <span class="keyword">new</span> EventEmitter();</span><br></pre></td></tr></table></figure>
+<p>hotEmitter 本质是 EventEmitter的一个实例，EventEmitter提供了异步事件驱动架构，[ 这里可以对比浏览器中的点击事件，本质上是一致的，只不过EventEmitter事件是由代码触发，点击事件是由鼠标触发 ]。<br>那 <code>webpackHotUpdate</code> 事件监听在哪儿呢？在 webpack/hot/dev-server.js 中：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack/hot/dev-server.js</span></span><br><span class="line"><span class="keyword">if</span> (<span class="built_in">module</span>.hot) &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> check = <span class="function"><span class="keyword">function</span> <span class="title">check</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">module</span>.hot.check(<span class="literal">true</span>).then(<span class="function"><span class="keyword">function</span>(<span class="params">updatedModules</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!updatedModules) &#123;</span><br><span class="line">                log(<span class="string">"warning"</span>, <span class="string">"[HMR] Cannot find update. Need to do a full reload!"</span>);</span><br><span class="line">                log(<span class="string">"warning"</span>, <span class="string">"[HMR] (Probably because of restarting the webpack-dev-server)"</span>);</span><br><span class="line">                <span class="built_in">window</span>.location.reload();</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (!upToDate()) &#123;</span><br><span class="line">                check();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="built_in">require</span>(<span class="string">"./log-apply-result"</span>)(updatedModules, updatedModules);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (upToDate()) &#123;</span><br><span class="line">                log(<span class="string">"info"</span>, <span class="string">"[HMR] App is up to date."</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;).catch(<span class="function"><span class="keyword">function</span>(<span class="params">err</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">var</span> status = <span class="built_in">module</span>.hot.status();</span><br><span class="line">            <span class="keyword">if</span> ([<span class="string">"abort"</span>, <span class="string">"fail"</span>].indexOf(status) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                log(<span class="string">"warning"</span>, <span class="string">"[HMR] Cannot apply update. Need to do a full reload!"</span>);</span><br><span class="line">                log(<span class="string">"warning"</span>, <span class="string">"[HMR] "</span> + err.stack || err.message);</span><br><span class="line">                <span class="built_in">window</span>.location.reload();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                log(<span class="string">"warning"</span>, <span class="string">"[HMR] Update failed: "</span> + err.stack || err.message);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> hotEmitter = <span class="built_in">require</span>(<span class="string">"./emitter"</span>);</span><br><span class="line">    hotEmitter.on(<span class="string">"webpackHotUpdate"</span>, <span class="function"><span class="keyword">function</span>(<span class="params">currentHash</span>) </span>&#123;</span><br><span class="line">        lastHash = currentHash;</span><br><span class="line">        <span class="keyword">if</span> (!upToDate() &amp;&amp; <span class="built_in">module</span>.hot.status() === <span class="string">"idle"</span>) &#123;</span><br><span class="line">            log(<span class="string">"info"</span>, <span class="string">"[HMR] Checking for updates on the server..."</span>);</span><br><span class="line">            check();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在监听到 <code>webpackHotUpdate</code> 事件之后，会调用 <code>check</code> 函数，而 <code>check</code> 函数内部会调用 <code>module.hot.check</code> 函数。 我们需要看下 webpack/lib/HotModuleReplacement.runtime.js：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack/lib/HotModuleReplacement.runtime.js</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ... </span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hotCreateModule</span>(<span class="params">moduleId</span>) </span>&#123; <span class="comment">// eslint-disable-line no-unused-vars</span></span><br><span class="line">        <span class="keyword">var</span> hot = &#123;</span><br><span class="line">            <span class="comment">// private stuff</span></span><br><span class="line">            _acceptedDependencies: &#123;&#125;,</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Module API</span></span><br><span class="line">            active: <span class="literal">true</span>,</span><br><span class="line">            accept: <span class="function"><span class="keyword">function</span>(<span class="params">dep, callback</span>) </span>&#123;</span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">typeof</span> dep === <span class="string">"undefined"</span>)</span><br><span class="line">                    hot._selfAccepted = <span class="literal">true</span>;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> dep === <span class="string">"function"</span>)</span><br><span class="line">                    hot._selfAccepted = dep;</span><br><span class="line">                <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">typeof</span> dep === <span class="string">"object"</span>)</span><br><span class="line">                    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; dep.length; i++)</span><br><span class="line">                        hot._acceptedDependencies[dep[i]] = callback || <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                    hot._acceptedDependencies[dep] = callback || <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;&#125;;</span><br><span class="line">            &#125;,</span><br><span class="line"></span><br><span class="line">			<span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// Management API</span></span><br><span class="line">            check: hotCheck,</span><br><span class="line">            apply: hotApply,</span><br><span class="line"></span><br><span class="line">			<span class="comment">// ... </span></span><br><span class="line">           </span><br><span class="line">        &#125;;</span><br><span class="line">        hotCurrentChildModule = <span class="literal">undefined</span>;</span><br><span class="line">        <span class="keyword">return</span> hot;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">function</span> <span class="title">hotCheck</span>(<span class="params">apply</span>) </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> hotDownloadManifest(hotRequestTimeout).then(<span class="function"><span class="keyword">function</span>(<span class="params">update</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (!update) &#123;</span><br><span class="line">                hotSetStatus(<span class="string">"idle"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            hotRequestedFilesMap = &#123;&#125;;</span><br><span class="line">            hotWaitingFilesMap = &#123;&#125;;</span><br><span class="line">            hotAvailableFilesMap = update.c;</span><br><span class="line">            hotUpdateNewHash = update.h;</span><br><span class="line"></span><br><span class="line">            hotSetStatus(<span class="string">"prepare"</span>);</span><br><span class="line">            <span class="keyword">var</span> promise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</span><br><span class="line">                hotDeferred = &#123;</span><br><span class="line">                    resolve: resolve,</span><br><span class="line">                    reject: reject</span><br><span class="line">                &#125;;</span><br><span class="line">            &#125;);</span><br><span class="line">            hotUpdate = &#123;&#125;;</span><br><span class="line">            <span class="comment">/*foreachInstalledChunks*/</span></span><br><span class="line">            &#123; <span class="comment">// eslint-disable-line no-lone-blocks</span></span><br><span class="line">                <span class="comment">/*globals chunkId */</span></span><br><span class="line">                hotEnsureUpdateChunk(chunkId);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (hotStatus === <span class="string">"prepare"</span> &amp;&amp; hotChunksLoading === <span class="number">0</span> &amp;&amp; hotWaitingFiles === <span class="number">0</span>) &#123;</span><br><span class="line">                hotUpdateDownloaded();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> promise;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><code>module.hot.check</code> 就是 <code>hotCreateModule</code> 中的 <code>hot.check</code>，指向该文件中 <code>hotCheck</code> 函数，<code>hotCheck</code> 函数会调用 <code>hotDownloadManifest</code> 函数，该函数可以在 webpack/lib/JsonpMainTemplate.runtime.js 中找到：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack/lib/JsonpMainTemplate.runtime.js</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hotDownloadManifest</span>(<span class="params">requestTimeout</span>) </span>&#123; <span class="comment">// eslint-disable-line no-unused-vars</span></span><br><span class="line">	requestTimeout = requestTimeout || <span class="number">10000</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123;</span><br><span class="line">		<span class="keyword">if</span> (<span class="keyword">typeof</span> XMLHttpRequest === <span class="string">"undefined"</span>)</span><br><span class="line">			<span class="keyword">return</span> reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"No browser support"</span>));</span><br><span class="line">		<span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="keyword">var</span> request = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">			<span class="keyword">var</span> requestPath = $<span class="built_in">require</span>$.p + $hotMainFilename$;</span><br><span class="line">			request.open(<span class="string">"GET"</span>, requestPath, <span class="literal">true</span>);</span><br><span class="line">			request.timeout = requestTimeout;</span><br><span class="line">			request.send(<span class="literal">null</span>);</span><br><span class="line">		&#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">			<span class="keyword">return</span> reject(err);</span><br><span class="line">		&#125;</span><br><span class="line">		request.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">			<span class="keyword">if</span> (request.readyState !== <span class="number">4</span>) <span class="keyword">return</span>;</span><br><span class="line">			<span class="keyword">if</span> (request.status === <span class="number">0</span>) &#123;</span><br><span class="line">				<span class="comment">// timeout</span></span><br><span class="line">				reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"Manifest request to "</span> + requestPath + <span class="string">" timed out."</span>));</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> (request.status === <span class="number">404</span>) &#123;</span><br><span class="line">				<span class="comment">// no update available</span></span><br><span class="line">				resolve();</span><br><span class="line">			&#125; <span class="keyword">else</span> <span class="keyword">if</span> (request.status !== <span class="number">200</span> &amp;&amp; request.status !== <span class="number">304</span>) &#123;</span><br><span class="line">				<span class="comment">// other failure</span></span><br><span class="line">				reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">"Manifest request to "</span> + requestPath + <span class="string">" failed."</span>));</span><br><span class="line">			&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="comment">// success</span></span><br><span class="line">				<span class="keyword">try</span> &#123;</span><br><span class="line">					<span class="keyword">var</span> update = <span class="built_in">JSON</span>.parse(request.responseText);</span><br><span class="line">				&#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">					reject(e);</span><br><span class="line">					<span class="keyword">return</span>;</span><br><span class="line">				&#125;</span><br><span class="line">				resolve(update);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;;</span><br><span class="line">	&#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+<p><code>hotDownloadManifest</code> 函数通过Ajax去请求更新文件列表。<br><img src="https://i.loli.net/2018/09/27/5baca3052dc23.png" alt="image hotDownloadManifest"></p>
+<p>Ajax请求返回会，会调用 <code>hotEnsureUpdateChunk</code> 函数，<code>hotEnsureUpdateChunk</code> 函数核心内容是调用 <code>hotDownloadUpdateChunk</code> 函数。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack/lib/HotModuleReplacement.runtime.js</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hotEnsureUpdateChunk</span>(<span class="params">chunkId</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (!hotAvailableFilesMap[chunkId]) &#123;</span><br><span class="line">		hotWaitingFilesMap[chunkId] = <span class="literal">true</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		hotRequestedFilesMap[chunkId] = <span class="literal">true</span>;</span><br><span class="line">		hotWaitingFiles++;</span><br><span class="line">		hotDownloadUpdateChunk(chunkId);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ...</span></span><br></pre></td></tr></table></figure>
+<p><code>hotDownloadUpdateChunk</code> 函数可以在 webpack/lib/JsonpMainTemplate.runtime.js 中找到：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// webpack/lib/JsonpMainTemplate.runtime.js</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hotDownloadUpdateChunk</span>(<span class="params">chunkId</span>) </span>&#123; <span class="comment">// eslint-disable-line no-unused-vars</span></span><br><span class="line">	<span class="keyword">var</span> head = <span class="built_in">document</span>.getElementsByTagName(<span class="string">"head"</span>)[<span class="number">0</span>];</span><br><span class="line">	<span class="keyword">var</span> script = <span class="built_in">document</span>.createElement(<span class="string">"script"</span>);</span><br><span class="line">	script.type = <span class="string">"text/javascript"</span>;</span><br><span class="line">	script.charset = <span class="string">"utf-8"</span>;</span><br><span class="line">	script.src = $<span class="built_in">require</span>$.p + $hotChunkFilename$;</span><br><span class="line">	$crossOriginLoading$;</span><br><span class="line">	head.appendChild(script);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>hotDownloadUpdateChunk</code> 函数使用JSONP的方式来下载更新模块内容。</p>
+<h3 id="LOADING-…-WAITING-🐬"><a href="#LOADING-…-WAITING-🐬" class="headerlink" title="LOADING …. WAITING 🐬"></a>LOADING …. WAITING 🐬</h3>
+      
+    </div>
+    <footer>
+      
+        
+  
+  <div class="categories">
+    <a href="/categories/Webpack/">Webpack</a>
+  </div>
+
+        
+  
+  <div class="tags">
+    <a href="/tags/个人总结/">个人总结</a>
+  </div>
+
+        
+  <div class="addthis addthis_toolbox addthis_default_style">
+    
+      <a class="addthis_button_tweet"></a>
+    
+    <a class="addthis_counter addthis_pill_style"></a>
+    
+      <a class="addthis_button_google_plusone" g:plusone:size="medium" style="width:36px"></a>
+    
+  </div>
+  <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>
+
+      
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+<div id="container"  style="margin-top: 40px"></div>
+<style>
+.gitment-container {
+  font-family: sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  word-wrap: break-word;
+}
+
+.gitment-container * {
+  box-sizing: border-box;
+}
+
+.gitment-container *:disabled {
+  cursor: not-allowed;
+}
+
+.gitment-container a,
+.gitment-container a:visited {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.gitment-container a:hover {
+  text-decoration: underline;
+}
+
+.gitment-container .gitment-hidden {
+  display: none;
+}
+
+.gitment-container .gitment-spinner-icon {
+  fill: #333;
+
+  -webkit-animation: gitment-spin 1s steps(12) infinite;
+  animation: gitment-spin 1s steps(12) infinite;
+}
+
+@-webkit-keyframes gitment-spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg)
+  }
+}
+
+@keyframes gitment-spin {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg)
+  }
+}
+
+.gitment-root-container {
+  margin: 19px 0;
+  padding: 20px 40px  ;
+  background: #ffff;
+}
+
+.gitment-header-container {
+  margin: 19px 0;
+}
+
+.gitment-header-like-btn,
+.gitment-comment-like-btn {
+  cursor: pointer;
+}
+
+.gitment-comment-like-btn {
+  float: right;
+}
+
+.gitment-comment-like-btn.liked {
+  color: #F44336;
+}
+
+.gitment-header-like-btn svg {
+  vertical-align: middle;
+  height: 30px;
+}
+
+.gitment-comment-like-btn svg {
+  vertical-align: middle;
+  height: 20px;
+}
+
+.gitment-header-like-btn.liked svg,
+.gitment-comment-like-btn.liked svg {
+  fill: #F44336;
+}
+
+a.gitment-header-issue-link,
+a.gitment-header-issue-link:visited {
+  float: right;
+  line-height: 30px;
+  color: #666;
+}
+
+a.gitment-header-issue-link:hover {
+  color: #666;
+}
+
+.gitment-comments-loading,
+.gitment-comments-error,
+.gitment-comments-empty {
+  text-align: center;
+  margin: 50px 0;
+}
+
+.gitment-comments-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0 0 38px;
+}
+
+.gitment-comment,
+.gitment-editor-container {
+  position: relative;
+  min-height: 60px;
+  padding-left: 60px;
+  margin: 19px 0;
+}
+
+.gitment-comment-avatar,
+.gitment-editor-avatar {
+  float: left;
+  margin-left: -60px;
+}
+
+.gitment-comment-avatar,
+.gitment-comment-avatar-img,
+.gitment-comment-avatar,
+.gitment-editor-avatar-img,
+.gitment-editor-avatar svg {
+  width: 44px;
+  height: 44px;
+  border-radius: 3px;
+}
+
+.gitment-editor-avatar .gitment-github-icon {
+  fill: #fff;
+  background-color: #333;
+}
+
+.gitment-comment-main,
+.gitment-editor-main {
+  position: relative;
+  border: 1px solid #CFD8DC;
+  border-radius: 0;
+}
+
+.gitment-editor-main::before,
+.gitment-editor-main::after,
+.gitment-comment-main::before,
+.gitment-comment-main::after {
+  position: absolute;
+  top: 11px;
+  left: -16px;
+  display: block;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  content: "";
+  border-color: transparent;
+  border-style: solid solid outset;
+}
+
+.gitment-editor-main::before,
+.gitment-comment-main::before {
+  border-width: 8px;
+  border-right-color: #CFD8DC;
+}
+
+.gitment-editor-main::after,
+.gitment-comment-main::after {
+  margin-top: 1px;
+  margin-left: 2px;
+  border-width: 7px;
+  border-right-color: #fff;
+}
+
+.gitment-comment-header {
+  margin: 12px 15px;
+  color: #666;
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+.gitment-editor-header {
+  padding: 0;
+  margin: 0;
+  border-bottom: 1px solid #CFD8DC;
+}
+
+a.gitment-comment-name,
+a.gitment-comment-name:visited {
+  font-weight: 600;
+  color: #666;
+}
+
+.gitment-editor-tabs {
+  margin-bottom: -1px;
+  margin-left: -1px;
+}
+
+.gitment-editor-tab {
+  display: inline-block;
+  padding: 11px 12px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #666;
+  text-decoration: none;
+  background-color: transparent;
+  border-width: 0 1px;
+  border-style: solid;
+  border-color: transparent;
+  border-radius: 0;
+
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+
+  outline: none;
+}
+
+.gitment-editor-tab.gitment-selected {
+  color: #333;
+  background-color: #fff;
+  border-color: #CFD8DC;
+}
+
+.gitment-editor-login {
+  float: right;
+  margin-top: -30px;
+  margin-right: 15px;
+}
+
+a.gitment-footer-project-link,
+a.gitment-footer-project-link:visited,
+a.gitment-editor-login-link,
+a.gitment-editor-login-link:visited {
+  color: #2196F3;
+}
+
+a.gitment-editor-logout-link,
+a.gitment-editor-logout-link:visited {
+  color: #666;
+}
+
+a.gitment-editor-logout-link:hover {
+  color: #2196F3;
+  text-decoration: none;
+}
+
+.gitment-comment-body {
+  position: relative;
+  margin: 12px 15px;
+  overflow: hidden;
+  border-radius: 3px;
+}
+
+.gitment-comment-body-folded {
+  cursor: pointer;
+}
+
+.gitment-comment-body-folded::before {
+  display: block !important;
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  bottom: 50px;
+  pointer-events: none;
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0), rgba(255, 255, 255, .9));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, .9));
+}
+
+.gitment-comment-body-folded::after {
+  display: block !important;
+  content: "Click to Expand" !important;
+  text-align: center;
+  color: #666;
+  position: absolute;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  left: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, .9);
+}
+
+.gitment-editor-body {
+  margin: 0;
+}
+
+.gitment-comment-body > *:first-child,
+.gitment-editor-preview > *:first-child {
+  margin-top: 0 !important;
+}
+
+.gitment-comment-body > *:last-child,
+.gitment-editor-preview > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+.gitment-editor-body textarea {
+  display: block;
+  width: 100%;
+  min-height: 150px;
+  max-height: 500px;
+  padding: 16px;
+  resize: vertical;
+
+  max-width: 100%;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+
+  background-color: #fff;
+
+  color: #333;
+  vertical-align: middle;
+  border: none;
+  border-radius: 0;
+  outline: none;
+  box-shadow: none;
+
+  overflow: visible;
+}
+
+.gitment-editor-body textarea:focus {
+  background-color: #fff;
+}
+
+.gitment-editor-preview {
+  min-height: 150px;
+
+  padding: 16px;
+  background-color: transparent;
+
+  width: 100%;
+  font-size: 14px;
+
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.gitment-editor-footer {
+  padding: 0;
+  margin-top: 10px;
+}
+
+.gitment-editor-footer::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+a.gitment-editor-footer-tip {
+  display: inline-block;
+  padding-top: 10px;
+  font-size: 12px;
+  color: #666;
+}
+
+a.gitment-editor-footer-tip:hover {
+  color: #2196F3;
+  text-decoration: none;
+}
+
+.gitment-comments-pagination {
+  list-style: none;
+  text-align: right;
+  border-radius: 0;
+  margin: -19px 0 19px 0;
+}
+
+.gitment-comments-page-item {
+  display: inline-block;
+  cursor: pointer;
+  border: 1px solid #CFD8DC;
+  margin-left: -1px;
+  padding: .25rem .5rem;
+}
+
+.gitment-comments-page-item:hover {
+  background-color: #f5f5f5;
+}
+
+.gitment-comments-page-item.gitment-selected {
+  background-color: #f5f5f5;
+}
+
+.gitment-editor-submit,
+.gitment-comments-init-btn {
+  color: #fff;
+  background-color: #00BCD4;
+
+  position: relative;
+  display: inline-block;
+  padding: 7px 13px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-size: 110% 110%;
+  border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.gitment-editor-submit:hover,
+.gitment-comments-init-btn:hover {
+  background-color: #00ACC1;
+}
+
+.gitment-comments-init-btn:disabled,
+.gitment-editor-submit:disabled {
+  color: rgba(255,255,255,0.75);
+  background-color: #4DD0E1;
+  box-shadow: none;
+}
+
+.gitment-editor-submit {
+  float: right;
+}
+
+.gitment-footer-container {
+  margin-top: 30px;
+  margin-bottom: 20px;
+  text-align: right;
+  font-size: 12px;
+}
+
+/*
+ * Markdown CSS
+ * Copied from https://github.com/sindresorhus/github-markdown-css
+ */
+.gitment-markdown {
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  line-height: 1.5;
+  color: #333;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.gitment-markdown .pl-c {
+  color: #969896;
+}
+
+.gitment-markdown .pl-c1,
+.gitment-markdown .pl-s .pl-v {
+  color: #0086b3;
+}
+
+.gitment-markdown .pl-e,
+.gitment-markdown .pl-en {
+  color: #795da3;
+}
+
+.gitment-markdown .pl-smi,
+.gitment-markdown .pl-s .pl-s1 {
+  color: #333;
+}
+
+.gitment-markdown .pl-ent {
+  color: #63a35c;
+}
+
+.gitment-markdown .pl-k {
+  color: #a71d5d;
+}
+
+.gitment-markdown .pl-s,
+.gitment-markdown .pl-pds,
+.gitment-markdown .pl-s .pl-pse .pl-s1,
+.gitment-markdown .pl-sr,
+.gitment-markdown .pl-sr .pl-cce,
+.gitment-markdown .pl-sr .pl-sre,
+.gitment-markdown .pl-sr .pl-sra {
+  color: #183691;
+}
+
+.gitment-markdown .pl-v,
+.gitment-markdown .pl-smw {
+  color: #ed6a43;
+}
+
+.gitment-markdown .pl-bu {
+  color: #b52a1d;
+}
+
+.gitment-markdown .pl-ii {
+  color: #f8f8f8;
+  background-color: #b52a1d;
+}
+
+.gitment-markdown .pl-c2 {
+  color: #f8f8f8;
+  background-color: #b52a1d;
+}
+
+.gitment-markdown .pl-c2::before {
+  content: "^M";
+}
+
+.gitment-markdown .pl-sr .pl-cce {
+  font-weight: bold;
+  color: #63a35c;
+}
+
+.gitment-markdown .pl-ml {
+  color: #693a17;
+}
+
+.gitment-markdown .pl-mh,
+.gitment-markdown .pl-mh .pl-en,
+.gitment-markdown .pl-ms {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.gitment-markdown .pl-mq {
+  color: #008080;
+}
+
+.gitment-markdown .pl-mi {
+  font-style: italic;
+  color: #333;
+}
+
+.gitment-markdown .pl-mb {
+  font-weight: bold;
+  color: #333;
+}
+
+.gitment-markdown .pl-md {
+  color: #bd2c00;
+  background-color: #ffecec;
+}
+
+.gitment-markdown .pl-mi1 {
+  color: #55a532;
+  background-color: #eaffea;
+}
+
+.gitment-markdown .pl-mc {
+  color: #ef9700;
+  background-color: #ffe3b4;
+}
+
+.gitment-markdown .pl-mi2 {
+  color: #d8d8d8;
+  background-color: #808080;
+}
+
+.gitment-markdown .pl-mdr {
+  font-weight: bold;
+  color: #795da3;
+}
+
+.gitment-markdown .pl-mo {
+  color: #1d3e81;
+}
+
+.gitment-markdown .pl-ba {
+  color: #595e62;
+}
+
+.gitment-markdown .pl-sg {
+  color: #c0c0c0;
+}
+
+.gitment-markdown .pl-corl {
+  text-decoration: underline;
+  color: #183691;
+}
+
+.gitment-markdown .octicon {
+  display: inline-block;
+  vertical-align: text-top;
+  fill: currentColor;
+}
+
+.gitment-markdown a {
+  background-color: transparent;
+  -webkit-text-decoration-skip: objects;
+}
+
+.gitment-markdown a:active,
+.gitment-markdown a:hover {
+  outline-width: 0;
+}
+
+.gitment-markdown strong {
+  font-weight: inherit;
+}
+
+.gitment-markdown strong {
+  font-weight: bolder;
+}
+
+.gitment-markdown h1 {
+  font-size: 2em;
+  margin: 0.67em 0;
+}
+
+.gitment-markdown img {
+  border-style: none;
+}
+
+.gitment-markdown svg:not(:root) {
+  overflow: hidden;
+}
+
+.gitment-markdown code,
+.gitment-markdown kbd,
+.gitment-markdown pre {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+.gitment-markdown hr {
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
+}
+
+.gitment-markdown input {
+  font: inherit;
+  margin: 0;
+}
+
+.gitment-markdown input {
+  overflow: visible;
+}
+
+.gitment-markdown [type="checkbox"] {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+.gitment-markdown * {
+  box-sizing: border-box;
+}
+
+.gitment-markdown input {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.gitment-markdown a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.gitment-markdown a:hover {
+  text-decoration: underline;
+}
+
+.gitment-markdown strong {
+  font-weight: 600;
+}
+
+.gitment-markdown hr {
+  height: 0;
+  margin: 15px 0;
+  overflow: hidden;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #dfe2e5;
+}
+
+.gitment-markdown hr::before {
+  display: table;
+  content: "";
+}
+
+.gitment-markdown hr::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.gitment-markdown table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.gitment-markdown td,
+.gitment-markdown th {
+  padding: 0;
+}
+
+.gitment-markdown h1,
+.gitment-markdown h2,
+.gitment-markdown h3,
+.gitment-markdown h4,
+.gitment-markdown h5,
+.gitment-markdown h6 {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.gitment-markdown h1 {
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.gitment-markdown h2 {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.gitment-markdown h3 {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.gitment-markdown h4 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.gitment-markdown h5 {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.gitment-markdown h6 {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.gitment-markdown p {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.gitment-markdown blockquote {
+  margin: 0;
+}
+
+.gitment-markdown ul,
+.gitment-markdown ol {
+  padding-left: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.gitment-markdown ol ol,
+.gitment-markdown ul ol {
+  list-style-type: lower-roman;
+}
+
+.gitment-markdown ul ul ol,
+.gitment-markdown ul ol ol,
+.gitment-markdown ol ul ol,
+.gitment-markdown ol ol ol {
+  list-style-type: lower-alpha;
+}
+
+.gitment-markdown dd {
+  margin-left: 0;
+}
+
+.gitment-markdown code {
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-size: 12px;
+}
+
+.gitment-markdown pre {
+  margin-top: 0;
+  margin-bottom: 0;
+  font: 12px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+}
+
+.gitment-markdown .octicon {
+  vertical-align: text-bottom;
+}
+
+.gitment-markdown .pl-0 {
+  padding-left: 0 !important;
+}
+
+.gitment-markdown .pl-1 {
+  padding-left: 4px !important;
+}
+
+.gitment-markdown .pl-2 {
+  padding-left: 8px !important;
+}
+
+.gitment-markdown .pl-3 {
+  padding-left: 16px !important;
+}
+
+.gitment-markdown .pl-4 {
+  padding-left: 24px !important;
+}
+
+.gitment-markdown .pl-5 {
+  padding-left: 32px !important;
+}
+
+.gitment-markdown .pl-6 {
+  padding-left: 40px !important;
+}
+
+.gitment-markdown::before {
+  display: table;
+  content: "";
+}
+
+.gitment-markdown::after {
+  display: table;
+  clear: both;
+  content: "";
+}
+
+.gitment-markdown>*:first-child {
+  margin-top: 0 !important;
+}
+
+.gitment-markdown>*:last-child {
+  margin-bottom: 0 !important;
+}
+
+.gitment-markdown a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.gitment-markdown .anchor {
+  float: left;
+  padding-right: 4px;
+  margin-left: -20px;
+  line-height: 1;
+}
+
+.gitment-markdown .anchor:focus {
+  outline: none;
+}
+
+.gitment-markdown p,
+.gitment-markdown blockquote,
+.gitment-markdown ul,
+.gitment-markdown ol,
+.gitment-markdown dl,
+.gitment-markdown table,
+.gitment-markdown pre {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.gitment-markdown hr {
+  height: 0.25em;
+  padding: 0;
+  margin: 24px 0;
+  background-color: #e1e4e8;
+  border: 0;
+}
+
+.gitment-markdown blockquote {
+  padding: 0 1em;
+  color: #6a737d;
+  border-left: 0.25em solid #dfe2e5;
+}
+
+.gitment-markdown blockquote>:first-child {
+  margin-top: 0;
+}
+
+.gitment-markdown blockquote>:last-child {
+  margin-bottom: 0;
+}
+
+.gitment-markdown kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font-size: 11px;
+  line-height: 10px;
+  color: #444d56;
+  vertical-align: middle;
+  background-color: #fafbfc;
+  border: solid 1px #c6cbd1;
+  border-bottom-color: #959da5;
+  border-radius: 0;
+  box-shadow: inset 0 -1px 0 #959da5;
+}
+
+.gitment-markdown h1,
+.gitment-markdown h2,
+.gitment-markdown h3,
+.gitment-markdown h4,
+.gitment-markdown h5,
+.gitment-markdown h6 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.gitment-markdown h1 .octicon-link,
+.gitment-markdown h2 .octicon-link,
+.gitment-markdown h3 .octicon-link,
+.gitment-markdown h4 .octicon-link,
+.gitment-markdown h5 .octicon-link,
+.gitment-markdown h6 .octicon-link {
+  color: #1b1f23;
+  vertical-align: middle;
+  visibility: hidden;
+}
+
+.gitment-markdown h1:hover .anchor,
+.gitment-markdown h2:hover .anchor,
+.gitment-markdown h3:hover .anchor,
+.gitment-markdown h4:hover .anchor,
+.gitment-markdown h5:hover .anchor,
+.gitment-markdown h6:hover .anchor {
+  text-decoration: none;
+}
+
+.gitment-markdown h1:hover .anchor .octicon-link,
+.gitment-markdown h2:hover .anchor .octicon-link,
+.gitment-markdown h3:hover .anchor .octicon-link,
+.gitment-markdown h4:hover .anchor .octicon-link,
+.gitment-markdown h5:hover .anchor .octicon-link,
+.gitment-markdown h6:hover .anchor .octicon-link {
+  visibility: visible;
+}
+
+.gitment-markdown h1 {
+  padding-bottom: 0.3em;
+  font-size: 2em;
+  border-bottom: 1px solid #eaecef;
+}
+
+.gitment-markdown h2 {
+  padding-bottom: 0.3em;
+  font-size: 1.5em;
+  border-bottom: 1px solid #eaecef;
+}
+
+.gitment-markdown h3 {
+  font-size: 1.25em;
+}
+
+.gitment-markdown h4 {
+  font-size: 1em;
+}
+
+.gitment-markdown h5 {
+  font-size: 0.875em;
+}
+
+.gitment-markdown h6 {
+  font-size: 0.85em;
+  color: #6a737d;
+}
+
+.gitment-markdown ul,
+.gitment-markdown ol {
+  padding-left: 2em;
+}
+
+.gitment-markdown ul ul,
+.gitment-markdown ul ol,
+.gitment-markdown ol ol,
+.gitment-markdown ol ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.gitment-markdown li>p {
+  margin-top: 16px;
+}
+
+.gitment-markdown li+li {
+  margin-top: 0.25em;
+}
+
+.gitment-markdown dl {
+  padding: 0;
+}
+
+.gitment-markdown dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.gitment-markdown dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+.gitment-markdown table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+}
+
+.gitment-markdown table th {
+  font-weight: 600;
+}
+
+.gitment-markdown table th,
+.gitment-markdown table td {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+
+.gitment-markdown table tr {
+  background-color: #fff;
+  border-top: 1px solid #c6cbd1;
+}
+
+.gitment-markdown table tr:nth-child(2n) {
+  background-color: #f5f5f5;
+}
+
+.gitment-markdown img {
+  max-width: 100%;
+  box-sizing: content-box;
+  background-color: #fff;
+}
+
+.gitment-markdown code {
+  padding: 0;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgba(27,31,35,0.05);
+  border-radius: 0;
+}
+
+.gitment-markdown code::before,
+.gitment-markdown code::after {
+  letter-spacing: -0.2em;
+  content: "\00a0";
+}
+
+.gitment-markdown pre {
+  word-wrap: normal;
+}
+
+.gitment-markdown pre>code {
+  padding: 0;
+  margin: 0;
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+}
+
+.gitment-markdown .highlight {
+  margin-bottom: 16px;
+}
+
+.gitment-markdown .highlight pre {
+  margin-bottom: 0;
+  word-break: normal;
+}
+
+.gitment-markdown .highlight pre,
+.gitment-markdown pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #f5f5f5;
+  border-radius: 0;
+}
+
+.gitment-markdown pre code {
+  display: inline;
+  max-width: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  line-height: inherit;
+  word-wrap: normal;
+  background-color: transparent;
+  border: 0;
+}
+
+.gitment-markdown pre code::before,
+.gitment-markdown pre code::after {
+  content: normal;
+}
+
+.gitment-markdown .full-commit .btn-outline:not(:disabled):hover {
+  color: #005cc5;
+  border-color: #005cc5;
+}
+
+.gitment-markdown kbd {
+  display: inline-block;
+  padding: 3px 5px;
+  font: 11px "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  line-height: 10px;
+  color: #444d56;
+  vertical-align: middle;
+  background-color: #fcfcfc;
+  border: solid 1px #c6cbd1;
+  border-bottom-color: #959da5;
+  border-radius: 0;
+  box-shadow: inset 0 -1px 0 #959da5;
+}
+
+.gitment-markdown :checked+.radio-label {
+  position: relative;
+  z-index: 1;
+  border-color: #0366d6;
+}
+
+.gitment-markdown .task-list-item {
+  list-style-type: none;
+}
+
+.gitment-markdown .task-list-item+.task-list-item {
+  margin-top: 3px;
+}
+
+.gitment-markdown .task-list-item input {
+  margin: 0 0.2em 0.25em -1.6em;
+  vertical-align: middle;
+}
+
+.gitment-markdown hr {
+  border-bottom-color: #eee;
+}
+</style>
+<script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+<script>
+    var gitment = new Gitment({
+    id:'undefined',
+    owner: 'Spades-S',
+    repo: 'SpadesComments',
+    oauth: {
+        client_id: '97c0bf26004470371f4e',
+        client_secret: '2cc70304d7b9e02d6dd486319038673daebab9d9',
+    },
+    })
+gitment.render('container')
+</script>
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="搜索">
+    <input type="hidden" name="q" value="site:spades-s.github.io">
+  </form>
+</div>
+
+  
+<div class="widget tag">
+  <h3 class="title">最新文章</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2018-09-27-Webpack热更新过程中发生了什么/">Webpack热更新过程中发生了什么</a>
+      </li>
+    
+      <li>
+        <a href="/2018-05-26-浏览器中的EventLoop/">浏览器中的EventLoop</a>
+      </li>
+    
+      <li>
+        <a href="/2018-05-03-重读红宝书-面向对象的程序设计/">重读红宝书-面向对象的程序设计</a>
+      </li>
+    
+      <li>
+        <a href="/2018-04-03-ECMAScript中的数据类型/">ECMAScript中的数据类型</a>
+      </li>
+    
+      <li>
+        <a href="/2018-03-27-回调的三生三世/">回调的三生三世</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">分类</h3>
+  <ul class="entry">
+  
+    <li><a href="/categories/Browser/">Browser</a><small>1</small></li>
+  
+    <li><a href="/categories/CSS/">CSS</a><small>9</small></li>
+  
+    <li><a href="/categories/JavaScript/">JavaScript</a><small>5</small></li>
+  
+    <li><a href="/categories/Webpack/">Webpack</a><small>1</small></li>
+  
+    <li><a href="/categories/readlist/">readlist</a><small>1</small></li>
+  
+    <li><a href="/categories/工程/">工程</a><small>1</small></li>
+  
+    <li><a href="/categories/运维/">运维</a><small>2</small></li>
+  
+    <li><a href="/categories/随笔/">随笔</a><small>1</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">标签</h3>
+  <ul class="entry">
+  
+    <li><a href="/tags/个人总结/">个人总结</a><small>14</small></li>
+  
+    <li><a href="/tags/杂感/">杂感</a><small>1</small></li>
+  
+    <li><a href="/tags/阅读整理/">阅读整理</a><small>6</small></li>
+  
+  </ul>
+</div>
+
+
+  
+<div class="widget tag">
+  <h3 class="title">个人作品</h3>
+  <ul class="entry">
+  
+            <li><a class="tooltipped tooltipped-n" href="http://111.230.25.17/" title="个人作品">MusicHub</a></li>
+        
+  </ul>
+</div>
+
+
+  
+
+<div class="widget tag">
+  <h3 class="title">links</h3>
+  <ul class="entry">
+  
+            <li><a class="tooltipped tooltipped-n" href="https://sumygg.com" title="大哥">Sumy</a></li>
+        
+            <li><a class="tooltipped tooltipped-n" href="http://ashenone.cn/" title="六哥">无火的余灰</a></li>
+        
+  </ul>
+</div>
+
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  
+  &copy; 2018 Spades
+  
+</div>
+<div class="clearfix"></div></footer>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+</body>
+</html>
