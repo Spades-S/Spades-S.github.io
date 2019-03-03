@@ -3,20 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Chrome+Ajax:$http方式无法读取本地文件mac下解决方法 | Spades</title>
+  <title>性能优化之webpack | Spades</title>
   <meta name="author" content="Spades">
   
-  <meta name="description" content="环境OSX、Chrome
-解决方法
-配置chrome的启动参数
-
-命令行实现：chrome可执行文件所在位置/可执行文件 + 配置启动参数
-1$ /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-a">
+  <meta name="description" content="webpack 性能优化
+referenceshttps://segmentfault.com/a/1190000009792759
+https://segmentfault.com/q/1010000009980994
+待做：文件上传方式
+http://www.10tiao.com/html/24">
   
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Chrome+Ajax:$http方式无法读取本地文件mac下解决方法"/>
+  <meta property="og:title" content="性能优化之webpack"/>
   <meta property="og:site_name" content="Spades"/>
 
   
@@ -61,32 +60,20 @@
       
       
   
-    <h1 class="title">Chrome+Ajax:$http方式无法读取本地文件mac下解决方法</h1>
+    <h1 class="title">性能优化之webpack</h1>
   
 
       
-        <time datetime="2017-02-11T07:55:27.000Z"><a href="/2017-02-11-Chrome-Ajax-http方式无法读取本地文件mac下解决方法/">2017-02-11</a></time>
+        <time datetime="2018-10-10T09:14:16.000Z"><a href="/2018-10-10-性能优化之webpack/">2018-10-10</a></time>
       
     </header>
     <div class="entry">
       
-        <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><p>OSX、Chrome</p>
-<h3 id="解决方法"><a href="#解决方法" class="headerlink" title="解决方法"></a>解决方法</h3><ul>
-<li><p>配置chrome的启动参数</p>
-<ul>
-<li><p>命令行实现：chrome可执行文件所在位置/可执行文件 + 配置启动参数</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --allow-file-access-from-files</span><br></pre></td></tr></table></figure>
-<p>/Applications/Google\ Chrome.app/Contents/MacOS是chrome所在路径</p>
-<p>Google\ Chrome是可执行文件</p>
-<p>–allow-file-access-from-files是启动参数</p>
-</li>
-<li><p>编写shell脚本(实际上和命令行实现无区别)</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">cd "/Applications/Google Chrome.app/Contents/MacOS"</span><br><span class="line">"/Applications/Google Chrome.app/Contents/MacOS/Chrome.old" --allow-file-access-from-files "$@"</span><br></pre></td></tr></table></figure>
-<p>“$@”将参数独立分开，独立打印</p>
-</li>
-</ul>
-</li>
-</ul>
+        <p>webpack 性能优化</p>
+<h3 id="references"><a href="#references" class="headerlink" title="references"></a>references</h3><p><a href="https://segmentfault.com/a/1190000009792759" target="_blank" rel="noopener">https://segmentfault.com/a/1190000009792759</a></p>
+<p><a href="https://segmentfault.com/q/1010000009980994" target="_blank" rel="noopener">https://segmentfault.com/q/1010000009980994</a></p>
+<p>待做：<br>文件上传方式</p>
+<p><a href="http://www.10tiao.com/html/240/201703/2649257138/1.html" target="_blank" rel="noopener">http://www.10tiao.com/html/240/201703/2649257138/1.html</a></p>
 
       
     </div>
@@ -95,7 +82,7 @@
         
   
   <div class="categories">
-    <a href="/categories/JavaScript/">JavaScript</a>
+    <a href="/categories/性能优化/">性能优化</a>
   </div>
 
         
